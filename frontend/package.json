@@ -1,0 +1,26 @@
+{
+  "name": "RacksterX",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vicons/carbon": "^0.13.0",
+    "@vicons/fluent": "^0.13.0",
+    "@vicons/ionicons5": "^0.13.0",
+    "vue": "^3.2.25",
+    "vue-router": "4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.3.3",
+    "naive-ui": "^2.32.1",
+    "vfonts": "^0.0.3",
+    "vite": "^2.9.9"
+  },
+  "keywords": [],
+  "author": "hyhacct"
+}
