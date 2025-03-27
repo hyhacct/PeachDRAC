@@ -1,10 +1,10 @@
 {
-  "name": "RacksterX",
-  "outputfilename": "RacksterX",
-  "frontend:install": "npm install",
-  "frontend:build": "npm run build",
-  "frontend:dev:watcher": "npm run dev",
-  "frontend:dev:serverUrl": "http://localhost:3000",
+  "name": "PeachDRAC",
+  "outputfilename": "PeachDRAC",
+  "frontend:install": "yarn install",
+  "frontend:build": "yarn build",
+  "frontend:dev:watcher": "yarn dev",
+  "frontend:dev:serverUrl": "http://localhost:5174",
   "author": {
     "name": "hyhacct",
     "email": "3202276686@qq.com"

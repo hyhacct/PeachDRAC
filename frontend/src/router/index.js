@@ -1,25 +1,18 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import ViewItem1 from '@/views/item-1/default.vue'
+import ViewItem2 from '@/views/item-2/default.vue'
 
 const routes = [
     {
         path: '/',
-        name: 'item-1',
+        name: 'scan',
         component: ViewItem1,
     },
     {
-        path: '/',
-        name: 'item-2',
-        component: ViewItem1,
-    }, {
-        path: '/',
-        name: 'item-3',
-        component: ViewItem1,
-    }, {
-        path: '/',
-        name: 'item-4',
-        component: ViewItem1,
-    }
+        path: '/base',
+        name: 'base',
+        component: ViewItem2,
+    },
 ]
 
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 curl 'https://11.86.229.1/locale/locale_zh.json' \
   -H 'Accept: text/javascript, text/html, application/xml, text/xml, */*' \
   -H 'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6' \

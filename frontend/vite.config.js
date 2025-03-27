@@ -10,6 +10,10 @@ export default defineConfig({
         vue(),
     ],
 
+    build: {
+        outDir: 'dist' // 确保与 wails.json 的 outputdir 一致
+    },
+
     // 定义基础路径，用于开发和生产环境
     base: '/',
 
