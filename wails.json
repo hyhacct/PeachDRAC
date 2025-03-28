@@ -4,7 +4,7 @@
   "frontend:install": "yarn install",
   "frontend:build": "yarn build",
   "frontend:dev:watcher": "yarn dev",
-  "frontend:dev:serverUrl": "http://localhost:5174",
+  "frontend:dev:serverUrl": "http://localhost:5173",
   "author": {
     "name": "hyhacct",
     "email": "3202276686@qq.com"

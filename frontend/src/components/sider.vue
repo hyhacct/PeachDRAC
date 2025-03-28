@@ -43,6 +43,6 @@ const options = [
 
 <template>
   <div>
-    <n-menu :options="options" />
+    <n-menu :options="options" :style="{ width: '100%' }" />
   </div>
 </template>

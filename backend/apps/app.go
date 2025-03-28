@@ -3,20 +3,24 @@ package apps
 import (
 	"PeachDRAC/backend/constants"
 	"PeachDRAC/backend/modules"
+	"PeachDRAC/backend/service/common"
 	"context"
 	"fmt"
 )
 
 // App struct
 type App struct {
-	ctx         context.Context
-	logsService *modules.ModulesLogs // 日志服务
-	ormService  *modules.ModulesOrm  // 数据库服务
+	ctx           context.Context
+	logsService   *modules.ModulesLogs  // 日志服务
+	ormService    *modules.ModulesOrm   // 数据库服务
+	CommonService *common.CommonService // 通用服务
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	return &App{
+		CommonService: common.NewService(),
+	}
 }
 
 // Startup is called at application startup
@@ -54,4 +58,9 @@ func (a *App) Shutdown(ctx context.Context) {
 // Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
+}
+
+// 探测指定IP范围内的设备，并且自动识别型号
+func (a *App) CommonSurvey(ips []string) interface{} {
+	return a.CommonService.Survey(ips)
 }

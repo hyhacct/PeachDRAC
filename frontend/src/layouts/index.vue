@@ -11,7 +11,7 @@ import ComponentSider from '@/components/sider.vue'
                 <ComponentHeader />
             </n-layout-header>
             <n-layout has-sider position="absolute" style="top: 64px; bottom: 64px">
-                <n-layout-sider bordered>
+                <n-layout-sider bordered :style="{ width: '200px' }">
                     <ComponentSider />
                 </n-layout-sider>
                 <n-layout content-style="padding: 10px;">
