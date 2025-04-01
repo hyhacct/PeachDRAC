@@ -1,20 +1,17 @@
 package common
 
 import (
+	"PeachDRAC/backend/model"
 	"PeachDRAC/backend/utils"
 	"sort"
 	"sync"
 )
 
 // 探测指定IP范围内的设备，并且自动识别型号
-func (s *CommonService) Survey(ips []string) interface{} {
-	type respond struct {
-		IP    string `json:"ip"`    // IP地址
-		Model string `json:"model"` // 型号
-	}
+func (s *CommonService) Survey(ips []string) []model.DeviceModel {
 
 	// 创建一个带缓冲的channel来存储结果
-	resultChan := make(chan respond, len(ips))
+	resultChan := make(chan model.DeviceModel, len(ips))
 	var wg sync.WaitGroup
 
 	// 并发处理每个IP
@@ -26,18 +23,18 @@ func (s *CommonService) Survey(ips []string) interface{} {
 				// 去掉空格
 				ipAddr = utils.TextTrimSpace(ipAddr)
 
-				var model string
+				var deviceModel string
 				if utils.IdracIsDell(ipAddr) {
-					model = "戴尔"
+					deviceModel = "戴尔"
 				} else if utils.IdracIsInspur(ipAddr) {
-					model = "浪潮"
+					deviceModel = "浪潮"
 				} else {
-					model = "未知/离线"
+					deviceModel = "未知/离线"
 				}
 
-				resultChan <- respond{
+				resultChan <- model.DeviceModel{
 					IP:    ipAddr,
-					Model: model,
+					Model: deviceModel,
 				}
 			}(ip)
 		}
@@ -50,7 +47,7 @@ func (s *CommonService) Survey(ips []string) interface{} {
 	}()
 
 	// 收集结果
-	var respondList []respond
+	var respondList []model.DeviceModel
 	for result := range resultChan {
 		respondList = append(respondList, result)
 	}

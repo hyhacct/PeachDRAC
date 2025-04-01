@@ -17,6 +17,13 @@ export default defineConfig({
     // 定义基础路径，用于开发和生产环境
     base: '/',
 
+
+  // 定义开发服务器的配置
+  server: {
+    port: 5174,
+    host: 'localhost',
+  },
+
     // 定义模块解析的配置
     resolve: {
         // 定义模块的别名

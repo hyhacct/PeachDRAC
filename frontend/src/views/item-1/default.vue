@@ -1,7 +1,6 @@
 <script setup>
 import { ref, h } from 'vue';
 import { deviceType } from '@/constants/deviceType';
-import { statusType } from '@/constants/statusType';
 import { NTag, useMessage } from 'naive-ui';
 import IPTraverser from '@/utils/ip';
 import { paragraph } from '@/constants/paragraph';
@@ -18,7 +17,10 @@ const onlineNumber = ref(0); // 在线设备数量
 const columns = [
   {
     title: '地址',
-    key: 'ip'
+    key: 'ip',
+    defaultSortOrder: 'ascend',
+    sorter: 'default',
+    width: 250,
   },
   {
     title: '设备',
@@ -32,6 +34,13 @@ const columns = [
         },
         { default: () => row.model }
       )
+    },
+    filterOptions: [{
+      label: '去掉离线',
+      value: '未知/离线'
+    }],
+    filter(value, row) {
+      return !~row.model.indexOf(value)
     }
   },
 ];
@@ -59,14 +68,12 @@ const handleStart = async () => {
   // 探测指定IP范围内的设备，并且自动识别型号
   try {
     const result = await CommonSurvey(ipList);
-    console.log("扫描设备 = ", result);
     if (result.length <= 0) {
       data.value = [];
       return;
     }
     data.value = result;
     message.success('扫描完成');
-    // 剔除离线设备
     onlineNumber.value = data.value.filter(item => item.model !== '未知/离线').length;
   } catch (error) {
     console.log("扫描失败 = ", error);
@@ -81,7 +88,7 @@ const handleStart = async () => {
 <template>
   <div>
     <n-flex vertical>
-      <n-card size="small" hoverable title="探测">
+      <n-card size="small" hoverable title="探测" :bordered="false">
         <n-flex justify="space-between">
           <div>
             <n-flex>
@@ -116,7 +123,7 @@ const handleStart = async () => {
         </n-flex>
       </n-card>
 
-      <n-card size="small" hoverable>
+      <n-card size="small" hoverable :bordered="false">
         <n-data-table size="small" :columns="columns" :data="data" :bordered="false" :loading="loading" />
       </n-card>
     </n-flex>

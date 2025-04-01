@@ -7,7 +7,6 @@ function renderIcon(icon) {
   return () => h(Icon, { icon })
 }
 
-
 const options = [
   {
     label: () =>
@@ -43,6 +42,6 @@ const options = [
 
 <template>
   <div>
-    <n-menu :options="options" :style="{ width: '100%' }" />
+    <n-menu :options="options" size="small" />
   </div>
 </template>

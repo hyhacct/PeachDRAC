@@ -1,35 +1,22 @@
-11.31.16.1 ipmi-710846889298-4b54 24:6e:96:66:a6:88
-11.31.19.1 ipmi-5bd0d9708d7a-e4e8 ec:f4:bb:db:b4:48
-11.31.20.1 ipmi-f32666b3979a-3ca2 ec:f4:bb:e6:32:78
-11.31.211.1 ipmi-0fabb92ac79d-e41a 00:1b:21:c2:1e:64
-11.31.26.1 ipmi-fb5ba837b3f9-dcfb 24:6e:96:03:36:30
-11.31.27.1 suid-4ac5ea5c8e8b-a46a 24:6e:96:70:c2:10
-11.31.32.1 ipmi-9f5a62da348a-2cb3 80:61:5f:0c:d1:5a
-11.31.33.1 ipmi-7666aeabbf29-6e3f 24:6e:96:3b:e7:10
-11.31.35.1 ipmi-3e7c91c06e65-2a71 24:6e:96:5e:e3:98
-11.31.39.1 ipmi-cdb8341a7a70-784c 24:6e:96:5f:f9:b0
-11.31.41.1 21D558EB893335A0 ec:f4:bb:e2:95:c0
-11.31.42.1 E61737E9F2FAC3DF 24:6e:96:66:a5:98
-11.31.43.1 suid-6ecfe079f435-84cb 24:6e:96:0b:5a:b8
-11.31.44.1 ipmi-6f9a00c1824d-44fc ec:f4:bb:2b:3a:91
-11.31.47.1 ipmi-a273360f3924-95a2 24:6e:96:15:ff:60
-11.31.48.1 ipmi-244b990c06df-b557 24:6e:96:80:40:28
-11.31.51.1 ipmi-9c5aee0b5301-bfd1 24:6e:96:24:56:08
-11.31.52.1 97D6EDFF02B8EE34 66:13:24:ae:27:e5
-11.31.53.1 ipmi-c7eab890dcea-8a2b 24:6e:96:60:c9:18
-11.31.64.1 ipmi-5445916a578d-114d ec:f4:bb:df:16:a0
-11.31.66.1 ipmi-10d62cff5716-348f 66:1d:d4:10:e4:11
-11.31.68.1 ipmi-dd54ec1da866-d582 66:58:20:7d:72:61
-11.31.71.1 ipmi-0040b35137e8-40ad 90:e2:ba:86:b6:6e
-11.31.76.1 ipmi-f6a983babaeb-3656 24:6e:96:24:25:68
-11.31.86.1 ipmi-59e724d44f1c-a1b6 88:67:20:8e:68:e0
-11.31.91.1 ipmi-b300c7ec4f60-fbfd 24:6e:96:71:49:99
-11.31.94.1 ipmi-df7e81f8395e-44e7 80:61:5f:0c:77:19
-11.31.98.1 ipmi-b53a58a3a623-3a8b 24:6e:96:66:a8:68
-11.31.109.1 C81BD4F94745A460 66:a1:57:63:3c:52
-11.31.115.1 76EB558ECE6DF6BB 2c:53:4a:02:be:38
-11.31.117.1 7740EC3928100EAF 24:6e:96:24:9e:f9
-11.31.118.1 suid-341d48007490-8ad0 24:6e:96:24:a0:10
-11.31.119.1 9289DEAA59AA0906 24:6e:96:04:9a:e8
-11.31.122.1 ipmi-04d77ac5d03c-c3a0 24:6e:96:24:a8:d0
-11.31.124.1 ipmi-2c1328ad068c-cf94 90:e2:ba:35:5f:22
+#!/usr/bin/env bash
+
+curl 'https://11.80.20.1/data?set=pwState:0' \
+  -X 'POST' \
+  -H 'Accept: */*' \
+  -H 'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6' \
+  -H 'Connection: keep-alive' \
+  -H 'Content-Length: 0' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -b '-http-session-=6::http.session::7abfb4128b5b1c9bbde8cb4cf6bcffdb; tokenvalue=fb9b71d01b6fe7a5dd2677bbaa82e028; sysidledicon=ledIcon%20grayLed' \
+  -H 'Origin: https://11.80.20.1' \
+  -H 'Referer: https://11.80.20.1/sysSummaryData.html' \
+  -H 'ST2: 29e7f64a84d8a7da12d8b7e8b1c48681' \
+  -H 'Sec-Fetch-Dest: empty' \
+  -H 'Sec-Fetch-Mode: cors' \
+  -H 'Sec-Fetch-Site: same-origin' \
+  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.0' \
+  -H 'sec-ch-ua: "Chromium";v="134", "Not:A-Brand";v="24", "Microsoft Edge";v="134"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "macOS"' \
+  --insecure
+
