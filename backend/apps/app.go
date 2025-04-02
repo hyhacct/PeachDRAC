@@ -2,6 +2,7 @@ package apps
 
 import (
 	"PeachDRAC/backend/constants"
+	"PeachDRAC/backend/model"
 	"PeachDRAC/backend/modules"
 	"PeachDRAC/backend/service/common"
 	"PeachDRAC/backend/service/dell"
@@ -43,7 +44,7 @@ func (a *App) Startup(ctx context.Context) {
 	// a.ormService.SyncTables()
 
 	// 启动通用服务
-	a.CommonService = common.NewService(a.DellService, a.InspurService)
+	a.CommonService = common.NewService(a.ctx, a.DellService, a.InspurService)
 }
 
 // DomReady is called after front-end resources have been loaded
@@ -83,4 +84,27 @@ PS: 如果探测失败，则返回model为：未知/离线
 */
 func (a *App) CommonSurvey(ips []string) interface{} {
 	return a.CommonService.Survey(ips)
+}
+
+/*
+执行对应的动作
+
+参数:
+
+	type ActionRequest struct {
+			Action string   `json:"action"`
+			IPs    []string `json:"ips"`
+			Fan    struct {
+					Speed int `json:"speed"` // 调整风扇的转速，如果为-1则表示自适应
+			} `json:"fan"`
+			NFS struct {
+					Mount struct {
+							IP   string `json:"ip"`   // 挂载NFS的IP
+							Path string `json:"path"` // 挂载NFS的路径
+					} `json:"mount"`
+			} `json:"nfs"`
+	}
+*/
+func (a *App) CommonAction(actions model.ActionRequest) {
+	a.CommonService.Action(actions)
 }

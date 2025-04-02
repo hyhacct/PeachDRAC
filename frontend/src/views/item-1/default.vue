@@ -18,30 +18,37 @@ const columns = [
   {
     title: '地址',
     key: 'ip',
-    defaultSortOrder: 'ascend',
-    sorter: 'default',
-    width: 250,
   },
   {
-    title: '设备',
-    key: 'model',
+    title: '状态',
+    key: 'status',
+    defaultSortOrder: 'ascend',
+    sorter(rowA, rowB) {
+      return rowA.status - rowB.status
+    },
     render(row) {
       return h(
         NTag,
         {
-          type: deviceType(row.model),
+          bordered: false,
+          type: row.status === null ? 'info' : row.status ? 'success' : 'error',
           size: 'small',
         },
-        { default: () => row.model }
+        { default: () => row.status === null ? '就绪' : row.status ? '在线' : '离线' }
       )
     },
-    filterOptions: [{
-      label: '去掉离线',
-      value: '未知/离线'
-    }],
-    filter(value, row) {
-      return !~row.model.indexOf(value)
-    }
+  },
+  {
+    title: '型号',
+    key: 'productName',
+  },
+  {
+    title: '序列号',
+    key: 'serialNumber',
+  },
+  {
+    title: '制造商',
+    key: 'manufacturer',
   },
 ];
 
@@ -61,7 +68,7 @@ const handleStart = async () => {
   const ipList = ipTraverser.traverse(startAddress.value, paragraphValue.value);
   data.value = ipList.map(ip => ({
     ip: ip,
-    model: '就绪',
+    status: null,
   }));
 
   loading.value = true;
@@ -74,7 +81,7 @@ const handleStart = async () => {
     }
     data.value = result;
     message.success('扫描完成');
-    onlineNumber.value = data.value.filter(item => item.model !== '未知/离线').length;
+    onlineNumber.value = data.value.filter(item => item.status).length;
   } catch (error) {
     console.log("扫描失败 = ", error);
     onlineNumber.value = 0;

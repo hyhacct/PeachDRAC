@@ -30,12 +30,6 @@ export const buttons = [
     action: 'powerColdBoot',
   },
   {
-    name: '电源-强制重启',
-    icon: 'hugeicons:hydro-power',
-    color: '#F5F5DC',
-    action: 'powerForceReset',
-  },
-  {
     name: '风扇调整',
     icon: 'ix:device-fan',
     color: '#9370DB',

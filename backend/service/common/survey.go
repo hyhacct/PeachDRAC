@@ -2,16 +2,17 @@ package common
 
 import (
 	"PeachDRAC/backend/model"
+	"PeachDRAC/backend/service/control"
 	"PeachDRAC/backend/utils"
 	"sort"
 	"sync"
 )
 
 // 探测指定IP范围内的设备，并且自动识别型号
-func (s *CommonService) Survey(ips []string) []model.DeviceModel {
+func (s *CommonService) Survey(ips []string) []model.DeviceSurvey {
 
 	// 创建一个带缓冲的channel来存储结果
-	resultChan := make(chan model.DeviceModel, len(ips))
+	resultChan := make(chan model.DeviceSurvey, len(ips))
 	var wg sync.WaitGroup
 
 	// 并发处理每个IP
@@ -20,22 +21,29 @@ func (s *CommonService) Survey(ips []string) []model.DeviceModel {
 			wg.Add(1)
 			go func(ipAddr string) {
 				defer wg.Done()
-				// 去掉空格
-				ipAddr = utils.TextTrimSpace(ipAddr)
 
-				var deviceModel string
-				if utils.IdracIsDell(ipAddr) {
-					deviceModel = "戴尔"
-				} else if utils.IdracIsInspur(ipAddr) {
-					deviceModel = "浪潮"
-				} else {
-					deviceModel = "未知/离线"
-				}
+				ipAddr = utils.TextTrimSpace(ipAddr) // 去掉空格
 
-				resultChan <- model.DeviceModel{
-					IP:    ipAddr,
-					Model: deviceModel,
+				var ipmiControl = control.NewService(ipAddr, "root", "abcd001002", 623)
+
+				if err := ipmiControl.ConnectServer(); err != nil {
+					resultChan <- model.DeviceSurvey{
+						IP:     ipAddr,
+						Status: false,
+					}
+					return
 				}
+				system, err := ipmiControl.GetSystem()
+				if err != nil {
+					resultChan <- model.DeviceSurvey{
+						IP:     ipAddr,
+						Status: false,
+					}
+					return
+				}
+				resultChan <- system
+
+				defer ipmiControl.Close()
 			}(ip)
 		}
 	}
@@ -47,7 +55,7 @@ func (s *CommonService) Survey(ips []string) []model.DeviceModel {
 	}()
 
 	// 收集结果
-	var respondList []model.DeviceModel
+	var respondList []model.DeviceSurvey
 	for result := range resultChan {
 		respondList = append(respondList, result)
 	}
