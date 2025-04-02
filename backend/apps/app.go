@@ -4,7 +4,9 @@ import (
 	"PeachDRAC/backend/constants"
 	"PeachDRAC/backend/model"
 	"PeachDRAC/backend/modules"
+	"PeachDRAC/backend/orm"
 	"PeachDRAC/backend/service/common"
+	"PeachDRAC/backend/service/config"
 	"PeachDRAC/backend/service/dell"
 	"PeachDRAC/backend/service/inspur"
 	"context"
@@ -15,10 +17,11 @@ import (
 type App struct {
 	ctx           context.Context
 	logsService   *modules.ModulesLogs  // 日志服务
-	ormService    *modules.ModulesOrm   // 数据库服务
+	ormService    *orm.SQLite           // 数据库服务
 	CommonService *common.CommonService // 通用服务
 	DellService   *dell.DellService     // 戴尔服务
 	InspurService *inspur.InspurService // 浪潮服务
+	configService *config.ConfigService // 配置服务
 }
 
 // NewApp creates a new App application struct
@@ -39,12 +42,14 @@ func (a *App) Startup(ctx context.Context) {
 	a.logsService.InitLogger(constants.PathLog)
 
 	// 启动数据库模块
-	a.ormService = modules.NewModulesOrm(a.logsService)
-	a.ormService.Init()
-	// a.ormService.SyncTables()
+	a.ormService = orm.NewSQLite()
+	a.ormService.SyncTable(model.Config{})
+
+	// 启动配置服务
+	a.configService = config.NewConfigService(a.ormService)
 
 	// 启动通用服务
-	a.CommonService = common.NewService(a.ctx, a.DellService, a.InspurService)
+	a.CommonService = common.NewService(a.ctx, a.DellService, a.InspurService, a.ormService)
 }
 
 // DomReady is called after front-end resources have been loaded
@@ -107,4 +112,25 @@ func (a *App) CommonSurvey(ips []string) interface{} {
 */
 func (a *App) CommonAction(actions model.ActionRequest) {
 	a.CommonService.Action(actions)
+}
+
+/*
+获取所有配置
+*/
+func (a *App) ConfigGetAll() model.ConfigRespond {
+	return a.configService.GetAll()
+}
+
+/*
+添加或更新配置
+*/
+func (a *App) ConfigAddOrUpdate(config model.Config) model.ConfigRespond {
+	return a.configService.AddOrUpdate(&config)
+}
+
+/*
+删除配置
+*/
+func (a *App) ConfigDelete(id int) model.ConfigRespond {
+	return a.configService.Delete(id)
 }
