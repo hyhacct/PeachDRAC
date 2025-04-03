@@ -1,6 +1,6 @@
 package constants
 
 const (
-	PathLog = "./etc/logs/default.log"
-	PathDb  = "./etc/db/default.db"
+	PathLog = "./etc/default.log"
+	PathDb  = "./etc/default.db"
 )

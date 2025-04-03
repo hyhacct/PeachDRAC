@@ -3,10 +3,24 @@
 import {model} from '../models';
 import {context} from '../models';
 
-export function CommonAction(arg1:model.ActionRequest):Promise<void>;
+export function CommonAction(arg1:model.ActionRequest):Promise<model.ConfigRespond>;
 
 export function CommonSurvey(arg1:Array<string>):Promise<any>;
+
+export function ConfigAddOrUpdate(arg1:model.Passwd):Promise<model.ConfigRespond>;
+
+export function ConfigDelete(arg1:number):Promise<model.ConfigRespond>;
+
+export function ConfigGetAll():Promise<model.ConfigRespond>;
+
+export function ConfigJavaAddOrUpdate(arg1:model.Java):Promise<model.ConfigRespond>;
+
+export function ConfigJavaDelete(arg1:number):Promise<model.ConfigRespond>;
+
+export function ConfigJavaGetAll():Promise<model.ConfigRespond>;
 
 export function DomReady(arg1:context.Context):Promise<void>;
 
 export function Greet(arg1:string):Promise<string>;
+
+export function SystemFindJavaInstalls():Promise<model.ConfigRespond>;

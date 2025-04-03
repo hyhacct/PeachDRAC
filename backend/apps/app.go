@@ -1,14 +1,12 @@
 package apps
 
 import (
-	"PeachDRAC/backend/constants"
 	"PeachDRAC/backend/model"
 	"PeachDRAC/backend/modules"
-	"PeachDRAC/backend/orm"
 	"PeachDRAC/backend/service/common"
-	"PeachDRAC/backend/service/config"
 	"PeachDRAC/backend/service/dell"
 	"PeachDRAC/backend/service/inspur"
+	"PeachDRAC/backend/service/system"
 	"context"
 	"fmt"
 )
@@ -16,12 +14,14 @@ import (
 // App struct
 type App struct {
 	ctx           context.Context
-	logsService   *modules.ModulesLogs  // 日志服务
-	ormService    *orm.SQLite           // 数据库服务
+	logsService   *modules.Logs         // 日志服务
+	ormService    *modules.Orm          // 数据库服务
 	CommonService *common.CommonService // 通用服务
 	DellService   *dell.DellService     // 戴尔服务
 	InspurService *inspur.InspurService // 浪潮服务
-	configService *config.ConfigService // 配置服务
+	systemService *system.SystemService // 系统服务
+	configPasswd  *model.ConfigPasswd   // 配置服务
+	configJava    *model.ConfigJava     // 配置服务
 }
 
 // NewApp creates a new App application struct
@@ -38,18 +38,22 @@ func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
 
 	// 启动日志模块
-	a.logsService = modules.NewModulesLogs()
-	a.logsService.InitLogger(constants.PathLog)
+	a.logsService = modules.NewLogsService()
+	a.logsService.InitLogger()
 
 	// 启动数据库模块
-	a.ormService = orm.NewSQLite()
-	a.ormService.SyncTable(model.Config{})
+	a.ormService = modules.NewOrmService(a.logsService)
+	a.ormService.SyncTable(&model.Passwd{}, &model.Java{})
+
+	// 启动系统服务
+	a.systemService = system.NewService()
 
 	// 启动配置服务
-	a.configService = config.NewConfigService(a.ormService)
+	a.configPasswd = model.NewConfigPasswd(a.ormService)
+	a.configJava = model.NewConfigJava(a.ormService)
 
 	// 启动通用服务
-	a.CommonService = common.NewService(a.ctx, a.DellService, a.InspurService, a.ormService)
+	a.CommonService = common.NewService(a.ctx, a.DellService, a.InspurService, a.configPasswd, a.configJava)
 }
 
 // DomReady is called after front-end resources have been loaded
@@ -118,19 +122,47 @@ func (a *App) CommonAction(actions model.ActionRequest) {
 获取所有配置
 */
 func (a *App) ConfigGetAll() model.ConfigRespond {
-	return a.configService.GetAll()
+	return a.configPasswd.GetAll()
 }
 
 /*
 添加或更新配置
 */
-func (a *App) ConfigAddOrUpdate(config model.Config) model.ConfigRespond {
-	return a.configService.AddOrUpdate(&config)
+func (a *App) ConfigAddOrUpdate(config model.Passwd) model.ConfigRespond {
+	return a.configPasswd.AddOrUpdate(&config)
 }
 
 /*
 删除配置
 */
 func (a *App) ConfigDelete(id int) model.ConfigRespond {
-	return a.configService.Delete(id)
+	return a.configPasswd.Delete(id)
+}
+
+/*
+查找系统中的Java安装, 并返回Java安装路径和版本
+*/
+func (a *App) SystemFindJavaInstalls() model.ConfigRespond {
+	return a.systemService.FindJavaInstalls()
+}
+
+/*
+获取所有Java配置
+*/
+func (a *App) ConfigJavaGetAll() model.ConfigRespond {
+	return a.configJava.GetAll()
+}
+
+/*
+添加或更新Java配置
+*/
+func (a *App) ConfigJavaAddOrUpdate(config model.Java) model.ConfigRespond {
+	return a.configJava.AddOrUpdate(&config)
+}
+
+/*
+删除Java配置
+*/
+func (a *App) ConfigJavaDelete(id int) model.ConfigRespond {
+	return a.configJava.Delete(id)
 }

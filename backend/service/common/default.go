@@ -1,7 +1,7 @@
 package common
 
 import (
-	"PeachDRAC/backend/orm"
+	"PeachDRAC/backend/model"
 	"PeachDRAC/backend/service/dell"
 	"PeachDRAC/backend/service/inspur"
 	"context"
@@ -10,15 +10,17 @@ import (
 type CommonService struct {
 	DellService   *dell.DellService
 	InspurService *inspur.InspurService
-	OrmService    *orm.SQLite
+	ConfigPasswd  *model.ConfigPasswd
+	ConfigJava    *model.ConfigJava
 	Ctx           context.Context
 }
 
-func NewService(ctx context.Context, dellService *dell.DellService, inspurService *inspur.InspurService, ormService *orm.SQLite) *CommonService {
+func NewService(ctx context.Context, dellService *dell.DellService, inspurService *inspur.InspurService, passwd *model.ConfigPasswd, java *model.ConfigJava) *CommonService {
 	return &CommonService{
 		Ctx:           ctx,
 		DellService:   dellService,
 		InspurService: inspurService,
-		OrmService:    ormService,
+		ConfigPasswd:  passwd,
+		ConfigJava:    java,
 	}
 }

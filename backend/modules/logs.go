@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"PeachDRAC/backend/constants"
 	"fmt"
 	"log"
 	"os"
@@ -9,7 +10,7 @@ import (
 	"time"
 )
 
-type ModulesLogs struct {
+type Logs struct {
 }
 
 // LogLevel 定义日志级别
@@ -35,22 +36,22 @@ var (
 	}
 )
 
-func NewModulesLogs() *ModulesLogs {
-	return &ModulesLogs{}
+func NewLogsService() *Logs {
+	return &Logs{}
 }
 
 // InitLogger 初始化日志系统
-func (c *ModulesLogs) InitLogger(logPath string) error {
+func (c *Logs) InitLogger() error {
 	var err error
 	once.Do(func() {
 		// 确保日志目录存在
-		logDir := filepath.Dir(logPath)
+		logDir := filepath.Dir(constants.PathLog)
 		if err = os.MkdirAll(logDir, 0755); err != nil {
 			return
 		}
 
 		// 打开日志文件，如果不存在则创建，追加写入
-		logFile, err = os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+		logFile, err = os.OpenFile(constants.PathLog, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 		if err != nil {
 			return
 		}
@@ -62,7 +63,7 @@ func (c *ModulesLogs) InitLogger(logPath string) error {
 }
 
 // LogMessage 记录日志消息
-func (c *ModulesLogs) LogMessage(level LogLevel, format string, args ...interface{}) {
+func (c *Logs) LogMessage(level LogLevel, format string, args ...interface{}) {
 	if logger == nil {
 		return
 	}
@@ -84,31 +85,31 @@ func (c *ModulesLogs) LogMessage(level LogLevel, format string, args ...interfac
 }
 
 // CloseLogger 关闭日志文件
-func (c *ModulesLogs) CloseLogger() {
+func (c *Logs) CloseLogger() {
 	if logFile != nil {
 		logFile.Close()
 	}
 }
 
 // 便捷的日志记录方法
-func (c *ModulesLogs) Debug(format string, args ...interface{}) {
+func (c *Logs) Debug(format string, args ...interface{}) {
 	c.LogMessage(DEBUG, format, args...)
 }
 
-func (c *ModulesLogs) Info(format string, args ...interface{}) {
+func (c *Logs) Info(format string, args ...interface{}) {
 	c.LogMessage(INFO, format, args...)
 }
 
-func (c *ModulesLogs) Warn(format string, args ...interface{}) {
+func (c *Logs) Warn(format string, args ...interface{}) {
 	c.LogMessage(WARN, format, args...)
 }
 
-func (c *ModulesLogs) Error(format string, args ...interface{}) {
+func (c *Logs) Error(format string, args ...interface{}) {
 	c.LogMessage(ERROR, format, args...)
 }
 
 // RotateLog 日志文件轮转
-func (c *ModulesLogs) RotateLog(logPath string) error {
+func (c *Logs) RotateLog(logPath string) error {
 	logMutex.Lock()
 	defer logMutex.Unlock()
 

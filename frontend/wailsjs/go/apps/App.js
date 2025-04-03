@@ -10,10 +10,38 @@ export function CommonSurvey(arg1) {
   return window['go']['apps']['App']['CommonSurvey'](arg1);
 }
 
+export function ConfigAddOrUpdate(arg1) {
+  return window['go']['apps']['App']['ConfigAddOrUpdate'](arg1);
+}
+
+export function ConfigDelete(arg1) {
+  return window['go']['apps']['App']['ConfigDelete'](arg1);
+}
+
+export function ConfigGetAll() {
+  return window['go']['apps']['App']['ConfigGetAll']();
+}
+
+export function ConfigJavaAddOrUpdate(arg1) {
+  return window['go']['apps']['App']['ConfigJavaAddOrUpdate'](arg1);
+}
+
+export function ConfigJavaDelete(arg1) {
+  return window['go']['apps']['App']['ConfigJavaDelete'](arg1);
+}
+
+export function ConfigJavaGetAll() {
+  return window['go']['apps']['App']['ConfigJavaGetAll']();
+}
+
 export function DomReady(arg1) {
   return window['go']['apps']['App']['DomReady'](arg1);
 }
 
 export function Greet(arg1) {
   return window['go']['apps']['App']['Greet'](arg1);
+}
+
+export function SystemFindJavaInstalls() {
+  return window['go']['apps']['App']['SystemFindJavaInstalls']();
 }

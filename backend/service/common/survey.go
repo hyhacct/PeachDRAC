@@ -15,6 +15,9 @@ func (s *CommonService) Survey(ips []string) []model.DeviceSurvey {
 	resultChan := make(chan model.DeviceSurvey, len(ips))
 	var wg sync.WaitGroup
 
+	// 检查是否有可用的配置
+	
+
 	// 并发处理每个IP
 	for _, ip := range ips {
 		if !utils.TextIsEmpty(ip) {

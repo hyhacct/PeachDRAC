@@ -8,7 +8,9 @@ import { darkTheme } from 'naive-ui'
 <template>
     <n-config-provider :theme="darkTheme">
         <n-message-provider>
-            <Layouts />
+            <n-dialog-provider>
+                <Layouts />
+            </n-dialog-provider>
         </n-message-provider>
     </n-config-provider>
 </template>

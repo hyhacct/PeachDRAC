@@ -1,17 +1,23 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import ViewItem1 from '@/views/item-1/default.vue'
-import ViewItem2 from '@/views/item-2/default.vue'
+import ViewSurvey from '@/views/survey/default.vue'
+import ViewAction from '@/views/action/default.vue'
+import ViewConfig from '@/views/config/default.vue'
 
 const routes = [
     {
         path: '/',
-        name: 'scan',
-        component: ViewItem1,
+        name: 'survey',
+        component: ViewSurvey,
     },
     {
-        path: '/base',
-        name: 'base',
-        component: ViewItem2,
+        path: '/action',
+        name: 'action',
+        component: ViewAction,
+    },
+    {
+        path: '/config',
+        name: 'config',
+        component: ViewConfig,
     },
 ]
 

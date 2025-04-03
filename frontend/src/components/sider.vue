@@ -14,7 +14,7 @@ const options = [
         RouterLink,
         {
           to: {
-            name: 'scan',
+            name: 'survey',
           }
         },
         { default: () => '设备扫描' }
@@ -28,7 +28,7 @@ const options = [
         RouterLink,
         {
           to: {
-            name: 'base',
+            name: 'action',
           }
         },
         { default: () => '基本控制' }
@@ -36,6 +36,20 @@ const options = [
     key: 'base',
     icon: renderIcon("uim:apps")
   },
+  {
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            name: 'config',
+          }
+        },
+        { default: () => '设置' }
+      ),
+    key: 'config',
+    icon: renderIcon("icon-park-outline:config")
+  }
 ]
 
 </script>
