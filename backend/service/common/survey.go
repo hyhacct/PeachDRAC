@@ -3,70 +3,90 @@ package common
 import (
 	"PeachDRAC/backend/model"
 	"PeachDRAC/backend/service/control"
-	"PeachDRAC/backend/utils"
-	"sort"
+	"fmt"
 	"sync"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // 探测指定IP范围内的设备，并且自动识别型号
-func (s *CommonService) Survey(ips []string) []model.DeviceSurvey {
+func (s *CommonService) Survey(ips []string) {
+	if len(ips) == 0 {
+		return
+	}
 
-	// 创建一个带缓冲的channel来存储结果
-	resultChan := make(chan model.DeviceSurvey, len(ips))
-	var wg sync.WaitGroup
+	wg := sync.WaitGroup{}
+	wg.Add(len(ips))
 
-	// 检查是否有可用的配置
-	
+	// 获取可用的密码组
+	passwdGroups := s.ConfigPasswd.GetAll()
 
-	// 并发处理每个IP
 	for _, ip := range ips {
-		if !utils.TextIsEmpty(ip) {
-			wg.Add(1)
-			go func(ipAddr string) {
-				defer wg.Done()
+		go func(ip string) {
+			defer wg.Done()
 
-				ipAddr = utils.TextTrimSpace(ipAddr) // 去掉空格
+			if !passwdGroups.Status {
+				runtime.EventsEmit(s.Ctx, "actions", model.ActionRespond{
+					IP:     ip,
+					Status: false,
+					Action: "获取密码组",
+					Result: fmt.Sprintf("获取密码组失败: %s", passwdGroups.Msg),
+				})
+				return
+			}
+			if len(passwdGroups.Data.([]model.Passwd)) == 0 {
+				runtime.EventsEmit(s.Ctx, "actions", model.ActionRespond{
+					IP:     ip,
+					Status: false,
+					Action: "获取密码组",
+					Result: "密码组为空",
+				})
+				return
+			}
 
-				var ipmiControl = control.NewService(ipAddr, "root", "abcd001002", 623)
+			var (
+				isSuccess   = false                 // 是否成功
+				ipmiControl *control.ControlService // 控制服务
+			)
 
+			// 遍历密码组
+			for _, v := range passwdGroups.Data.([]model.Passwd) {
+				// 实例化
+				ipmiControl = control.NewService(ip, v.Username, v.Password, v.Port)
+				// 连接
 				if err := ipmiControl.ConnectServer(); err != nil {
-					resultChan <- model.DeviceSurvey{
-						IP:     ipAddr,
-						Status: false,
-					}
-					return
+					continue
 				}
-				system, err := ipmiControl.GetSystem()
-				if err != nil {
-					resultChan <- model.DeviceSurvey{
-						IP:     ipAddr,
-						Status: false,
-					}
-					return
-				}
-				resultChan <- system
+				isSuccess = true // 登录成功
+				break
+			}
 
-				defer ipmiControl.Close()
-			}(ip)
-		}
+			// 连接失败
+			if !isSuccess {
+				runtime.EventsEmit(s.Ctx, "actions", model.ActionRespond{
+					IP:     ip,
+					Status: false,
+					Action: "获取密码组",
+					Result: fmt.Sprintf("已尝试%d个密码组,均登录失败", len(passwdGroups.Data.([]model.Passwd))),
+				})
+				return
+			}
+
+			// 获取设备型号
+			_, err := ipmiControl.GetSystem()
+			if err != nil {
+				runtime.EventsEmit(s.Ctx, "actions", model.ActionRespond{
+					IP:     ip,
+					Status: false,
+					Action: "获取设备型号",
+					Result: fmt.Sprintf("获取设备型号失败: %s", err.Error()),
+				})
+				return
+			}
+
+			defer ipmiControl.Close()
+
+		}(ip)
 	}
-
-	// 等待所有goroutine完成
-	go func() {
-		wg.Wait()
-		close(resultChan)
-	}()
-
-	// 收集结果
-	var respondList []model.DeviceSurvey
-	for result := range resultChan {
-		respondList = append(respondList, result)
-	}
-
-	// 为数组排序
-	sort.Slice(respondList, func(i, j int) bool {
-		return respondList[i].IP < respondList[j].IP
-	})
-
-	return respondList
+	wg.Wait()
 }

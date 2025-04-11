@@ -3,9 +3,9 @@
 import {model} from '../models';
 import {context} from '../models';
 
-export function CommonAction(arg1:model.ActionRequest):Promise<model.ConfigRespond>;
+export function CommonAction(arg1:model.ActionRequest):Promise<void>;
 
-export function CommonSurvey(arg1:Array<string>):Promise<any>;
+export function CommonSurvey(arg1:Array<string>):Promise<void>;
 
 export function ConfigAddOrUpdate(arg1:model.Passwd):Promise<model.ConfigRespond>;
 

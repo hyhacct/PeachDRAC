@@ -71,7 +71,7 @@ func main() {
 			WebviewIsTransparent: true,
 			WindowIsTranslucent:  true,
 			About: &mac.AboutInfo{
-				Title:   "PeachDRAC",
+				Title:   "",
 				Message: "一个支持多平台的iDRAC控制器程序",
 				Icon:    icon,
 			},

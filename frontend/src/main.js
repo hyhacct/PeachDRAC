@@ -5,6 +5,7 @@ import router from './router'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import { Icon } from '@iconify/vue';
+import { createPinia } from 'pinia';
 
 const app = createApp(App)
 
@@ -12,4 +13,5 @@ app.use(naive)
 app.use(router)
 app.use(ElementPlus)
 app.component('Icon', Icon)
+app.use(createPinia())
 app.mount('#app')

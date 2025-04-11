@@ -1,10 +1,10 @@
 <script setup>
 import { ref, h } from 'vue';
-import { deviceType } from '@/constants/deviceType';
 import { NTag, useMessage } from 'naive-ui';
 import IPTraverser from '@/utils/ip';
 import { paragraph } from '@/constants/paragraph';
 import { CommonSurvey } from '@wails/go/apps/App'
+import { EventsOn } from '@wails/runtime/runtime'
 
 const startAddress = ref('');
 const paragraphValue = ref(null);
@@ -90,6 +90,12 @@ const handleStart = async () => {
     loading.value = false;
   }
 }
+
+
+// 事件监听
+EventsOn('actions', (data) => {
+  console.log("data = ", data);
+});
 </script>
 
 <template>
