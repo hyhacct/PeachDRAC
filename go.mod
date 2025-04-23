@@ -6,7 +6,7 @@ toolchain go1.24.1
 
 require (
 	github.com/bougou/go-ipmi v0.7.4
-	github.com/wailsapp/wails/v2 v2.10.0
+	github.com/wailsapp/wails/v2 v2.10.1
 	gorm.io/driver/sqlite v1.5.7
 	gorm.io/gorm v1.25.12
 )

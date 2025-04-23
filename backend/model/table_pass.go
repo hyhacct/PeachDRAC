@@ -7,13 +7,14 @@ import (
 
 // 密码组配置
 type TablePass struct {
-	ID        int       `gorm:"primary_key"`
-	Username  string    `gorm:"not null"`
-	Password  string    `gorm:"not null"`
-	Port      string    `gorm:"not null"`
-	Status    bool      `gorm:"not null"` // 是否启用
-	CreatedAt time.Time `gorm:"autoCreateTime"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+	ID        int       `gorm:"primary_key" json:"id"`
+	Username  string    `gorm:"not null" json:"username"`
+	Password  string    `gorm:"not null" json:"password"`
+	Port      string    `gorm:"not null" json:"port"`
+	Status    bool      `gorm:"not null" json:"status"`   // 是否启用
+	Priority  int       `gorm:"not null" json:"priority"` // 优先级,数字越大越高
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (TablePass) TableName() string {
@@ -36,10 +37,7 @@ func (TablePass) Delete(id int) error {
 	return farmework.ModuleOrm.Where("id = ?", id).Delete(&TablePass{}).Error
 }
 
-func (TablePass) Update(id int, pass TablePass) error {
-	return farmework.ModuleOrm.Where("id = ?", id).Updates(&pass).Error
-}
-
-func (TablePass) Create(pass TablePass) error {
-	return farmework.ModuleOrm.Create(&pass).Error
+func (TablePass) AddOrUpdate(config TablePass) error {
+	return farmework.ModuleOrm.Where("id = ?", config.ID).
+		Assign(config).FirstOrCreate(&config).Error
 }

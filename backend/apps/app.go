@@ -28,6 +28,7 @@ func (a *App) Startup(ctx context.Context) {
 
 	// 初始化数据库
 	farmework.InitOrm()
+	farmework.AutoMigrate(&model.TablePass{}, &model.TableJava{})
 
 	// 初始化配置服务
 	a.config_service = config.NewService()
@@ -56,10 +57,17 @@ func (a *App) Greet(num int) int {
 }
 
 /*
-创建密码配置
+获取密码列表
 */
-func (a *App) ConfigPassCreate(Username string, Password string, Port string) model.WailsCommunicate {
-	return a.config_service.CreatePass(Username, Password, Port)
+func (a *App) ConfigPassGetList() model.WailsCommunicate {
+	return a.config_service.GetAllPass()
+}
+
+/*
+创建或修改密码配置
+*/
+func (a *App) ConfigPassAddOrUpdate(id int, Username string, Password string, Port string) model.WailsCommunicate {
+	return a.config_service.AddOrUpdatePass(id, Username, Password, Port)
 }
 
 /*
@@ -67,11 +75,4 @@ func (a *App) ConfigPassCreate(Username string, Password string, Port string) mo
 */
 func (a *App) ConfigPassDelete(id int) model.WailsCommunicate {
 	return a.config_service.DeletePass(id)
-}
-
-/*
-更新密码配置
-*/
-func (a *App) ConfigPassUpdate(id int, Username string, Password string, Port string) model.WailsCommunicate {
-	return a.config_service.UpdatePass(id, Username, Password, Port)
 }

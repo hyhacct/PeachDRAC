@@ -38,4 +38,11 @@ yarn-error.log*
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-dist
+# 忽略etc目录
+**/etc/**
+
+# 忽略dist目录
+**/dist/**
+
+# 忽略node_modules目录
+**/node_modules/**

@@ -1,12 +1,11 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
-import { SideSheet, Button } from '@douyinfe/semi-ui';
+import { SideSheet, Button, Notification } from '@douyinfe/semi-ui';
 import { Form, Tooltip } from '@douyinfe/semi-ui';
 import { FormState } from '@douyinfe/semi-ui/lib/es/form';
 import {
-  ConfigPassCreate,
-  ConfigPassDelete,
-  ConfigPassUpdate
+  ConfigPassAddOrUpdate,
 } from '@/wailsjs/go/apps/App';
+import WailsResp from '@/types/wails_resp';
 
 
 const ViewSidePass = forwardRef((props, ref) => {
@@ -17,12 +16,30 @@ const ViewSidePass = forwardRef((props, ref) => {
 
   // 控制侧边栏的显示
   const [visible, setVisible] = useState(false);
-  const change = () => {
+  const change = (row: any) => {
+    if (row) {
+      setFormData(row);
+    }
     setVisible(!visible);
   }
 
-  const submit = () => {
-    ConfigPassCreate(formData.Username, formData.Password, formData.Port);
+  const submit = async () => {
+    try {
+      const resp: WailsResp = await ConfigPassAddOrUpdate(formData.id, formData.username, formData.password, formData.port);
+      if (!resp.Status) {
+        throw new Error(resp.Msg);
+      }
+      change(null);
+      Notification.success({
+        title: '成功',
+        content: resp.Msg,
+      });
+    } catch (error: any) {
+      Notification.error({
+        title: '错误',
+        content: error?.message,
+      });
+    }
   }
 
   const footer = () => {
@@ -37,9 +54,11 @@ const ViewSidePass = forwardRef((props, ref) => {
   }
 
   const [formData, setFormData] = useState({
-    Username: '',
-    Password: '',
-    Port: '',
+    id: 0,
+    username: '',
+    password: '',
+    port: '',
+    enable: true,
   });
 
   const handleFormChange = (formState: FormState) => {
@@ -51,9 +70,9 @@ const ViewSidePass = forwardRef((props, ref) => {
       <SideSheet title="密码组" visible={visible} onCancel={change} footer={footer()}>
         <div>
           <Form initValues={formData} onChange={handleFormChange}>
-            <Form.Input field='Username' label='用户名' placeholder="登录IPMI的用户名" />
-            <Form.Input field='Password' label='密码' placeholder="登录IPMI的密码" />
-            <Form.Input field='Port' label='端口' placeholder="一般默认就行" />
+            <Form.Input field='username' label='用户名' placeholder="登录IPMI的用户名" />
+            <Form.Input field='password' label='密码' placeholder="登录IPMI的密码" />
+            <Form.Input field='port' label='端口' placeholder="一般默认就行" />
           </Form>
         </div>
       </SideSheet>
