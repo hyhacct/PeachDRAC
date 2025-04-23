@@ -1,7 +1,6 @@
 package main
 
 import (
-	"PeachDRAC/backend/apps"
 	"embed"
 	"log"
 
@@ -20,13 +19,13 @@ var icon []byte
 
 func main() {
 	// Create an instance of the app structure
-	app := apps.NewApp()
+	app := NewApp()
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:             "",
-		Width:             1024,
-		Height:            768,
+		Title:             "PeachDRAC",
+		Width:             2148,
+		Height:            1024,
 		MinWidth:          1024,
 		MinHeight:         768,
 		MaxWidth:          1280,
@@ -36,15 +35,14 @@ func main() {
 		Frameless:         false,
 		StartHidden:       false,
 		HideWindowOnClose: false,
-		BackgroundColour:  &options.RGBA{R: 255, G: 255, B: 255, A: 255},
 		Assets:            assets,
 		Menu:              nil,
 		Logger:            nil,
 		LogLevel:          logger.DEBUG,
-		OnStartup:         app.Startup,
-		OnDomReady:        app.DomReady,
-		OnBeforeClose:     app.BeforeClose,
-		OnShutdown:        app.Shutdown,
+		OnStartup:         app.startup,
+		OnDomReady:        app.domReady,
+		OnBeforeClose:     app.beforeClose,
+		OnShutdown:        app.shutdown,
 		WindowStartState:  options.Normal,
 		Bind: []interface{}{
 			app,
@@ -60,19 +58,19 @@ func main() {
 		// Mac platform specific options
 		Mac: &mac.Options{
 			TitleBar: &mac.TitleBar{
-				TitlebarAppearsTransparent: true,
-				HideTitle:                  false,
-				HideTitleBar:               false,
-				FullSizeContent:            false,
-				UseToolbar:                 false,
-				HideToolbarSeparator:       true,
+				// TitlebarAppearsTransparent: true,
+				HideTitle: false,
+				// HideTitleBar:               false,
+				FullSizeContent:      false,
+				UseToolbar:           false,
+				HideToolbarSeparator: true,
 			},
 			Appearance:           mac.NSAppearanceNameDarkAqua,
 			WebviewIsTransparent: true,
 			WindowIsTranslucent:  true,
 			About: &mac.AboutInfo{
-				Title:   "",
-				Message: "一个支持多平台的iDRAC控制器程序",
+				Title:   "PeachDRAC",
+				Message: "",
 				Icon:    icon,
 			},
 		},
