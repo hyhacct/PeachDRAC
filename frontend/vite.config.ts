@@ -23,7 +23,9 @@ export default defineConfig({
     resolve: {
         // 定义模块的别名
         alias: {
-            '@': path.resolve(__dirname, './src')
+            '@': path.resolve(__dirname, './src'),
+            '#': path.resolve(__dirname, './src/wailsjs/go/farmework'),
+            '$': path.resolve(__dirname, './src/wailsjs/runtime'),
         },
         // 定义模块解析时的扩展名
         extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],

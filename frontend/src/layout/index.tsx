@@ -1,9 +1,10 @@
 import { Nav, Layout } from '@douyinfe/semi-ui';
-import { IconList, IconConfig, IconDivider } from '@douyinfe/semi-icons-lab';
+import { IconList, IconConfig, IconDivider, IconCodeHighlight } from '@douyinfe/semi-icons-lab';
 import { Route, Routes, Link } from 'react-router-dom';
 import ViewAction from '@/pages/view_action';
 import ViewSurvey from '@/pages/view_survey';
 import ViewSetting from '@/pages/view_seting';
+import ViewConfig from '@/pages/view_config';
 
 export const ViewLayout = () => {
   const { Sider, Content } = Layout;
@@ -20,7 +21,8 @@ export const ViewLayout = () => {
         const routerMap = {
           "item-1": "/action",
           "item-2": "/survey",
-          "item-3": "/setting"
+          "item-3": "/config",
+          "item-4": "/setting",
         };
         return (
           <Link
@@ -44,6 +46,11 @@ export const ViewLayout = () => {
         },
         {
           itemKey: 'item-3',
+          text: '配置管理',
+          icon: <IconCodeHighlight />,
+        },
+        {
+          itemKey: 'item-4',
           text: '系统设置',
           icon: <IconConfig />,
         },
@@ -70,13 +77,13 @@ export const ViewLayout = () => {
             style={{
               borderRadius: '10px',
               border: '1px solid var(--semi-color-border)',
-              height: '80vh',
               padding: '32px',
             }}
           >
             <Routes>
               <Route path="/action" element={<ViewAction />} />
               <Route path="/survey" element={<ViewSurvey />} />
+              <Route path="/config" element={<ViewConfig />} />
               <Route path="/setting" element={<ViewSetting />} />
             </Routes>
           </div>

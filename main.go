@@ -1,6 +1,7 @@
 package main
 
 import (
+	"PeachDRAC/backend/apps"
 	"embed"
 	"log"
 
@@ -19,7 +20,7 @@ var icon []byte
 
 func main() {
 	// Create an instance of the app structure
-	app := NewApp()
+	app := apps.NewApp()
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -39,10 +40,10 @@ func main() {
 		Menu:              nil,
 		Logger:            nil,
 		LogLevel:          logger.DEBUG,
-		OnStartup:         app.startup,
-		OnDomReady:        app.domReady,
-		OnBeforeClose:     app.beforeClose,
-		OnShutdown:        app.shutdown,
+		OnStartup:         app.Startup,
+		OnDomReady:        app.DomReady,
+		OnBeforeClose:     app.BeforeClose,
+		OnShutdown:        app.Shutdown,
 		WindowStartState:  options.Normal,
 		Bind: []interface{}{
 			app,
@@ -52,15 +53,12 @@ func main() {
 			WebviewIsTransparent: false,
 			WindowIsTranslucent:  false,
 			DisableWindowIcon:    false,
-			// DisableFramelessWindowDecorations: false,
-			WebviewUserDataPath: "",
+			WebviewUserDataPath:  "",
 		},
 		// Mac platform specific options
 		Mac: &mac.Options{
 			TitleBar: &mac.TitleBar{
-				// TitlebarAppearsTransparent: true,
-				HideTitle: false,
-				// HideTitleBar:               false,
+				HideTitle:            false,
 				FullSizeContent:      false,
 				UseToolbar:           false,
 				HideToolbarSeparator: true,
