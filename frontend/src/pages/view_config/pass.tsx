@@ -1,11 +1,13 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Table, Button, Tag, Switch, Input, Space, Modal, Notification } from '@douyinfe/semi-ui';
+import React, { useEffect } from 'react';
+import { Table, Button, Tag, Switch, Input, Space } from '@douyinfe/semi-ui';
 import { IconClock, IconSearch } from '@douyinfe/semi-icons';
 import ViewSidePass from './side_pass';
-import { ConfigPassDelete, ConfigPassGetList } from '@/wailsjs/go/apps/App';
-import WailsResp from '@/types/wails_resp';
+import useConfigStore from '@/store/store_config';
+
 
 function ViewPass() {
+  const { Delete, GetList, dataList, update } = useConfigStore();
+
   const columns = [
     {
       title: '优先级',
@@ -25,7 +27,7 @@ function ViewPass() {
     },
     {
       title: '启用',
-      dataIndex: 'port',
+      dataIndex: 'status',
       render: (text: string) => {
         return <Switch onChange={(v, e) => console.log(v)} />
       }
@@ -44,101 +46,36 @@ function ViewPass() {
         return (
           <div>
             <Button theme='outline' type='primary' style={{ marginRight: 8 }} onClick={() => addOrUpdatePass(record)}>编辑</Button>
-            <Button theme='outline' type='danger' style={{ marginRight: 8 }} onClick={() => deletePass(record.id)}>删除</Button>
+            <Button theme='outline' type='danger' style={{ marginRight: 8 }} onClick={() => Delete(record.id)}>删除</Button>
           </div>
         );
       }
     },
   ];
 
-  // const data = [
-  //   {
-  //     priority: 1,
-  //     username: 'admin',
-  //     password: '123456',
-  //     port: 1234,
-  //     createAt: '2021-01-01 12:00',
-  //   },
-  //   {
-  //     priority: 2,
-  //     username: 'root',
-  //     password: 'abcd001002',
-  //     port: 438,
-  //     createAt: '2021-01-01 12:00',
-  //   },
-  // ]
-
-  const [data, setData] = useState<any[]>([]);
-
   useEffect(() => {
-    getAllList();
+    GetList();
   }, []); // 空依赖数组确保只在挂载时调用一次
 
-  const getAllList = async () => {
-    try {
-      const resp: WailsResp = await ConfigPassGetList();
-      if (!resp.Status) {
-        throw new Error(resp.Msg);
-      }
-      setData(resp.Data);
-      console.log("data ========= ", resp.Data);
-    } catch (error: any) {
-      Notification.error({
-        title: '错误',
-        content: error?.message,
-      });
-    }
-  }
-
-  // 删除密码组
-  const deletePass = async (id: number) => {
-    try {
-      Modal.error({
-        title: '危险', content: '确定要删除密码组吗？删除后将无法恢复此记录, 请谨慎操作！',
-        okButtonProps: {
-          onClick: async () => {
-            const resp: WailsResp = await ConfigPassDelete(id);
-            if (!resp.Status) {
-              throw new Error(resp.Msg);
-            }
-            Notification.success({
-              title: '成功',
-              content: resp.Msg,
-            });
-          }
-        }
-      });
-    } catch (error: any) {
-      Notification.error({
-        title: '错误',
-        content: error?.message,
-      });
-    }
-  }
-
-
-  const sidePassRef = useRef<any>(null);
 
   // 新增或编辑密码组
-  const addOrUpdatePass = (row: any) => {
-    if (sidePassRef?.current) {
-      sidePassRef.current.change(row);
-    }
+  const addOrUpdatePass = (row: any | null) => {
+    update({ show: true, form: row });
   }
 
   return (
     <div style={{ marginTop: '16px' }}>
       <div>
-        <ViewSidePass ref={sidePassRef} />
+        <ViewSidePass />
       </div>
       <div>
         <Space>
           <Input prefix={<IconSearch />} showClear placeholder="搜索内容"></Input>
-          <Button theme='outline' type='primary' style={{ marginRight: 8 }} onClick={addOrUpdatePass}>新增</Button>
+          <Button theme='outline' type='primary' style={{ marginRight: 8 }} onClick={() => addOrUpdatePass(null)}>新增</Button>
         </Space>
       </div>
       <div style={{ marginTop: 16 }}>
-        <Table size='small' columns={columns} dataSource={data} pagination={{ pageSize: 3 }} />
+        <Table size='small' columns={columns} dataSource={dataList} pagination={{ pageSize: 10 }} />
       </div>
     </div>
   )

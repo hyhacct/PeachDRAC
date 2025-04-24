@@ -83,3 +83,7 @@ Level=SUCCESS 2025/04/23 21:22:39 数据库初始化成功
 Level=ERROR 2025/04/23 21:22:39 数据库迁移失败 Cannot add a NOT NULL column with default value NULL
 Level=SUCCESS 2025/04/23 21:23:24 数据库初始化成功
 Level=SUCCESS 2025/04/23 21:23:24 数据库迁移完成
+Level=SUCCESS 2025/04/23 22:08:15 数据库初始化成功
+Level=SUCCESS 2025/04/23 22:08:15 数据库迁移完成
+Level=SUCCESS 2025/04/23 22:10:29 数据库初始化成功
+Level=SUCCESS 2025/04/23 22:10:29 数据库迁移完成
