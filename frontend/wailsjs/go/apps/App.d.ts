@@ -3,11 +3,19 @@
 import {model} from '../models';
 import {context} from '../models';
 
-export function ConfigPassAddOrUpdate(arg1:number,arg2:string,arg3:string,arg4:string):Promise<model.WailsCommunicate>;
+export function ConfigJavaAddOrUpdate(arg1:model.TableJava):Promise<model.WailsCommunicate>;
+
+export function ConfigJavaDelete(arg1:number):Promise<model.WailsCommunicate>;
+
+export function ConfigJavaGetList():Promise<model.WailsCommunicate>;
+
+export function ConfigPassAddOrUpdate(arg1:model.TablePass):Promise<model.WailsCommunicate>;
 
 export function ConfigPassDelete(arg1:number):Promise<model.WailsCommunicate>;
 
 export function ConfigPassGetList():Promise<model.WailsCommunicate>;
+
+export function ConfigPassSwitch(arg1:number,arg2:boolean):Promise<model.WailsCommunicate>;
 
 export function DomReady(arg1:context.Context):Promise<void>;
 

@@ -66,8 +66,15 @@ func (a *App) ConfigPassGetList() model.WailsCommunicate {
 /*
 创建或修改密码配置
 */
-func (a *App) ConfigPassAddOrUpdate(id int, Username string, Password string, Port string) model.WailsCommunicate {
-	return a.config_service.AddOrUpdatePass(id, Username, Password, Port)
+func (a *App) ConfigPassAddOrUpdate(form model.TablePass) model.WailsCommunicate {
+	return a.config_service.AddOrUpdatePass(form)
+}
+
+/*
+更新密码配置启用状态
+*/
+func (a *App) ConfigPassSwitch(id int, status bool) model.WailsCommunicate {
+	return a.config_service.SwitchPass(id, status)
 }
 
 /*
@@ -75,4 +82,25 @@ func (a *App) ConfigPassAddOrUpdate(id int, Username string, Password string, Po
 */
 func (a *App) ConfigPassDelete(id int) model.WailsCommunicate {
 	return a.config_service.DeletePass(id)
+}
+
+/*
+获取Java配置列表
+*/
+func (a *App) ConfigJavaGetList() model.WailsCommunicate {
+	return a.config_service.GetAllJava()
+}
+
+/*
+创建或修改Java配置
+*/
+func (a *App) ConfigJavaAddOrUpdate(form model.TableJava) model.WailsCommunicate {
+	return a.config_service.AddOrUpdateJava(form)
+}
+
+/*
+删除Java配置
+*/
+func (a *App) ConfigJavaDelete(id int) model.WailsCommunicate {
+	return a.config_service.DeleteJava(id)
 }

@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { Table, Button, Tag, Switch, Input, Space } from '@douyinfe/semi-ui';
 import { IconClock, IconSearch } from '@douyinfe/semi-icons';
 import ViewSidePass from './side_pass';
-import useConfigStore from '@/store/store_config';
+import useConfigStore from '@/store/store_config_pass';
 
 
 function ViewPass() {
-  const { Delete, GetList, dataList, update } = useConfigStore();
+  const { Delete, GetList, dataList, SwitchStatus, update, resetForm } = useConfigStore();
 
   const columns = [
     {
@@ -28,8 +28,8 @@ function ViewPass() {
     {
       title: '启用',
       dataIndex: 'status',
-      render: (text: string) => {
-        return <Switch onChange={(v, e) => console.log(v)} />
+      render: (text: string, record: any) => {
+        return <Switch onChange={(v) => SwitchStatus(record.id, v)} checked={record.status} />
       }
     },
     {
@@ -60,7 +60,12 @@ function ViewPass() {
 
   // 新增或编辑密码组
   const addOrUpdatePass = (row: any | null) => {
-    update({ show: true, form: row });
+    if (row) {
+      update({ show: true, form: row });
+    } else {
+      resetForm();
+      update({ show: true });
+    }
   }
 
   return (

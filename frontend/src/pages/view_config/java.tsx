@@ -1,110 +1,25 @@
 import { Tag, Banner, Card, Space, Empty } from "@douyinfe/semi-ui";
-import { Descriptions, Col, Row, Typography, OverflowList } from '@douyinfe/semi-ui';
+import { Descriptions, Col, Row, Typography, Button } from '@douyinfe/semi-ui';
 import { IconRating } from "@douyinfe/semi-icons-lab";
 import { IllustrationNoContent, IllustrationNoContentDark } from '@douyinfe/semi-illustrations';
-
+import ViewSideJava from './side_java';
+import useConfigStore from '@/store/store_config_java';
+import { splitIp } from '@/utils/text';
+import { model } from '@wails/go/models';
 
 function ViewJava() {
   const { Meta } = Card;
   const { Text } = Typography;
 
-  const data = [
-    {
-      title: 'Java8 - 戴尔',
-      path: "/usr/bin/java",
-      version: "1.8.0_282",
-      ipmi: ['11.98.11.1', '11.98.11.2', '11.98.11.3', '11.98.11.4', '11.98.11.5', '11.98.11.6', '11.98.11.7', '11.98.11.8', '11.98.11.9', '11.98.11.10'],
-      model: "Dell R740",
-      createAt: "2025-04-23 16:43:14"
-    },
-    {
-      title: 'Java8 - 戴尔',
-      path: "/usr/bin/java",
-      version: "1.8.0_282",
-      ipmi: [],
-      model: "Dell R740",
-      createAt: "2025-04-23 16:43:14"
-    },
-    {
-      title: 'Java8 - 戴尔',
-      path: "/usr/bin/java",
-      version: "1.8.0_282",
-      ipmi: [],
-      model: "Dell R740",
-      createAt: "2025-04-23 16:43:14"
-    },
-    {
-      title: 'Java8 - 戴尔',
-      path: "/usr/bin/java",
-      version: "1.8.0_282",
-      ipmi: [],
-      model: "Dell R740",
-      createAt: "2025-04-23 16:43:14"
-    },
-    {
-      title: 'Java8 - 戴尔',
-      path: "/usr/bin/java",
-      version: "1.8.0_282",
-      ipmi: [],
-      model: "Dell R740",
-      createAt: "2025-04-23 16:43:14"
-    },
-    {
-      title: 'Java8 - 戴尔',
-      path: "/usr/bin/java",
-      version: "1.8.0_282",
-      ipmi: [],
-      model: "Dell R740",
-      createAt: "2025-04-23 16:43:14"
-    },
-    {
-      title: 'Java8 - 戴尔',
-      path: "/usr/bin/java",
-      version: "1.8.0_282",
-      ipmi: [],
-      model: "Dell R740",
-      createAt: "2025-04-23 16:43:14"
-    },
-    {
-      title: 'Java8 - 戴尔',
-      path: "/usr/bin/java",
-      version: "1.8.0_282",
-      ipmi: [],
-      model: "Dell R740",
-      createAt: "2025-04-23 16:43:14"
-    },
-    {
-      title: 'Java8 - 戴尔',
-      path: "/usr/bin/java",
-      version: "1.8.0_282",
-      ipmi: [],
-      model: "Dell R740",
-      createAt: "2025-04-23 16:43:14"
-    },
-    {
-      title: 'Java8 - 戴尔',
-      path: "/usr/bin/java",
-      version: "1.8.0_282",
-      ipmi: [],
-      model: "Dell R740",
-      createAt: "2025-04-23 16:43:14"
-    },
-    {
-      title: 'Java8 - 戴尔',
-      path: "/usr/bin/java",
-      version: "1.8.0_282",
-      ipmi: [],
-      model: "Dell R740",
-      createAt: "2025-04-23 16:43:14"
-    },
-  ];
+  const { dataList, update, resetForm, reset, show, form, Delete, AddOrUpdate } = useConfigStore();
 
+  const open = (row: model.TableJava | null) => {
+    update({ show: true, form: row || undefined });
+  }
 
   const style = {
-    border: '1px solid var(--semi-color-border)',
     backgroundColor: 'var(--semi-color-bg-2)',
-    borderRadius: '3px',
-    paddingLeft: '20px',
+    borderRadius: '10px',
   };
 
   return (
@@ -113,9 +28,29 @@ function ViewJava() {
         type="info"
         description="若需要为不同厂商或者IPMI指定启动控制台的Java版本, 请点击[新增配置]按钮, 若无配置则使用系统默认的Java版本"
       />
+      <ViewSideJava />
       <div style={{ marginTop: '16px' }}>
         <Row gutter={[10, 10]}>
-          {data.map((item) => (
+          <Col span={8}>
+            <div >
+              <Card
+                style={style}
+                bordered={false}
+                headerLine={true}
+                shadows='hover'
+              >
+                <Button theme='borderless' type='primary' style={{ height: '100%', width: '100%' }} onClick={() => open(null)}>
+                  <Empty
+                    image={<IllustrationNoContent />}
+                    darkModeImage={<IllustrationNoContentDark style={{ height: 107 }} />}
+                    title={'新增配置'}
+                    description="点击添加一个新的配置"
+                  />
+                </Button>
+              </Card>
+            </div>
+          </Col>
+          {dataList.map((item) => (
             <Col span={8}>
               <div >
                 <Card
@@ -125,17 +60,17 @@ function ViewJava() {
                   title={
                     <Meta
                       title={item.title}
-                      description={item.createAt}
+                      description={item.created_at}
                       avatar={<IconRating size="extra-large" />}
                     />
                   }
                   headerExtraContent={
                     <div>
                       <Space wrap>
-                        <Text link>
+                        <Text link onClick={() => open(item)}>
                           编辑
                         </Text>
-                        <Text link type="danger">
+                        <Text link type="danger" onClick={() => Delete(item.id)}>
                           删除
                         </Text>
                       </Space>
@@ -143,17 +78,16 @@ function ViewJava() {
                   }
                 >
                   <Descriptions>
-                    <Descriptions.Item itemKey="Java版本">{item.version}</Descriptions.Item>
                     <Descriptions.Item itemKey="Java路径">{item.path}</Descriptions.Item>
-                    <Descriptions.Item itemKey="应用型号">{item.model}</Descriptions.Item>
+                    <Descriptions.Item itemKey="应用型号">{item.allot}</Descriptions.Item>
                     <Descriptions.Item itemKey="应用IPMI">
-                      {item.ipmi.length != 0 ?
+                      {item.ips && splitIp(item.ips).length != 0 ?
                         <div>
                           <Tag shape='circle' color='violet'>
-                            {item.ipmi[0]}
+                            {splitIp(item.ips)[0]}
                           </Tag>
                           <Tag shape='circle' style={{ marginLeft: '8px' }}>
-                            {"+" + item.ipmi.length + "台"}
+                            {"+" + splitIp(item.ips).length + "台"}
                           </Tag>
                         </div>
                         :
@@ -167,24 +101,6 @@ function ViewJava() {
               </div>
             </Col>
           ))}
-
-          <Col span={8}>
-            <div >
-              <Card
-                style={style}
-                bordered={false}
-                headerLine={true}
-                shadows='hover'
-              >
-                <Empty
-                  image={<IllustrationNoContent style={{ width: 150, height: 150 }} />}
-                  darkModeImage={<IllustrationNoContentDark style={{ width: 150, height: 133 }} />}
-                  title={'新增配置'}
-                  description="点击添加一个新的配置"
-                />
-              </Card>
-            </div>
-          </Col>
         </Row>
       </div>
     </div >

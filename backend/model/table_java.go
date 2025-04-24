@@ -6,12 +6,13 @@ import (
 )
 
 type TableJava struct {
-	ID        int       `gorm:"primary_key" json:"id"`   // 主键
-	Path      string    `gorm:"not null" json:"path"`    // 路径
-	Version   string    `gorm:"not null" json:"version"` // 版本号
-	Allot     string    `gorm:"not null" json:"allot"`   // 分配给某个厂商的服务器去使用
-	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+	ID        int       `gorm:"primary_key" json:"id"` // 主键
+	Title     string    `gorm:"not null" json:"title"` // 标题
+	Path      string    `gorm:"not null" json:"path"`  // 路径
+	Allot     string    `json:"allot"`                 // 分配给某个厂商的服务器去使用
+	Ips       string    `json:"ips"`                   // 分配给哪些IP
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at" ts_type:"string"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at" ts_type:"string"`
 }
 
 func (TableJava) TableName() string {

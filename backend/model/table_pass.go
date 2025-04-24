@@ -10,11 +10,11 @@ type TablePass struct {
 	ID        int       `gorm:"primary_key" json:"id"`
 	Username  string    `gorm:"not null" json:"username"`
 	Password  string    `gorm:"not null" json:"password"`
-	Port      string    `gorm:"not null" json:"port"`
-	Status    bool      `gorm:"not null" json:"status"`   // 是否启用
+	Port      int       `gorm:"not null" json:"port"`
+	Status    bool      `json:"status"`                   // 是否启用
 	Priority  int       `gorm:"not null" json:"priority"` // 优先级,数字越大越高
-	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at" ts_type:"string"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at" ts_type:"string"`
 }
 
 func (TablePass) TableName() string {
@@ -40,4 +40,8 @@ func (TablePass) Delete(id int) error {
 func (TablePass) AddOrUpdate(config TablePass) error {
 	return farmework.ModuleOrm.Where("id = ?", config.ID).
 		Assign(config).FirstOrCreate(&config).Error
+}
+
+func (TablePass) SwitchStatus(id int, status bool) error {
+	return farmework.ModuleOrm.Model(&TablePass{}).Where("id = ?", id).Update("status", status).Error
 }
