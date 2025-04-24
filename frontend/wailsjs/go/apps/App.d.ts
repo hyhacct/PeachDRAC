@@ -20,3 +20,5 @@ export function ConfigPassSwitch(arg1:number,arg2:boolean):Promise<model.WailsCo
 export function DomReady(arg1:context.Context):Promise<void>;
 
 export function Greet(arg1:number):Promise<number>;
+
+export function SurveyStart(arg1:Array<string>):Promise<model.WailsCommunicate>;

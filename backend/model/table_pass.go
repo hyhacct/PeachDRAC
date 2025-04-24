@@ -21,9 +21,17 @@ func (TablePass) TableName() string {
 	return "pass"
 }
 
+// 获取所有密码组，默认按照Priority做降序
 func (TablePass) GetAll() ([]TablePass, error) {
 	var passList []TablePass
-	err := farmework.ModuleOrm.Find(&passList).Error
+	err := farmework.ModuleOrm.Order("priority DESC").Find(&passList).Error
+	return passList, err
+}
+
+// 获取所有启用的密码组，默认按照Priority做降序
+func (TablePass) GetAllEnabled() ([]TablePass, error) {
+	var passList []TablePass
+	err := farmework.ModuleOrm.Where("status = ?", true).Order("priority DESC").Find(&passList).Error
 	return passList, err
 }
 

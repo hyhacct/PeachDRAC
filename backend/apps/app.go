@@ -4,6 +4,7 @@ import (
 	"PeachDRAC/backend/farmework"
 	"PeachDRAC/backend/model"
 	"PeachDRAC/backend/service/config"
+	"PeachDRAC/backend/service/survey"
 	"context"
 )
 
@@ -11,6 +12,7 @@ import (
 type App struct {
 	ctx            context.Context
 	config_service *config.ServiceConfig
+	survey_service *survey.ServiceSurvey
 }
 
 // NewApp creates a new App application struct
@@ -32,6 +34,9 @@ func (a *App) Startup(ctx context.Context) {
 
 	// 初始化配置服务
 	a.config_service = config.NewService()
+
+	// 初始化survey服务
+	a.survey_service = survey.NewService(a.ctx)
 }
 
 // domReady is called after front-end resources have been loaded
@@ -103,4 +108,11 @@ func (a *App) ConfigJavaAddOrUpdate(form model.TableJava) model.WailsCommunicate
 */
 func (a *App) ConfigJavaDelete(id int) model.WailsCommunicate {
 	return a.config_service.DeleteJava(id)
+}
+
+/*
+开始探测
+*/
+func (a *App) SurveyStart(ips []string) model.WailsCommunicate {
+	return a.survey_service.StartSurvey(ips)
 }

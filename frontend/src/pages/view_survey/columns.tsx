@@ -1,5 +1,6 @@
 import { IconTick, IconClose, IconLoading } from '@douyinfe/semi-icons';
-import { Tag } from '@douyinfe/semi-ui';
+import { Tag, Tooltip } from '@douyinfe/semi-ui';
+import { cutOff } from '@/utils/text';
 
 
 const columns = [
@@ -38,6 +39,21 @@ const columns = [
   {
     title: '序列号',
     dataIndex: 'sn',
+  },
+  {
+    title: '消息',
+    dataIndex: 'msg',
+    render: (text: string) => {
+      return (
+        <Tooltip content={text}
+          arrowPointAtCenter={false}
+          position='top'
+        >
+          {cutOff(text, 20)}
+        </Tooltip>
+      )
+
+    },
   },
 ];
 

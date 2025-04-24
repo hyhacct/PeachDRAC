@@ -37,3 +37,7 @@ export function DomReady(arg1) {
 export function Greet(arg1) {
   return window['go']['apps']['App']['Greet'](arg1);
 }
+
+export function SurveyStart(arg1) {
+  return window['go']['apps']['App']['SurveyStart'](arg1);
+}
