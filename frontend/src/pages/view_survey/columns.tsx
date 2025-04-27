@@ -1,4 +1,4 @@
-import { IconTick, IconClose, IconLoading } from '@douyinfe/semi-icons';
+import { IconTick, IconClose, IconMore } from '@douyinfe/semi-icons';
 import { Tag, Tooltip } from '@douyinfe/semi-ui';
 import { cutOff } from '@/utils/text';
 
@@ -26,7 +26,7 @@ const columns = [
         ready: {
           text: '就绪',
           color: 'amber',
-          icon: <IconLoading />,
+          icon: <IconMore />,
         },
       }
       return <Tag type='ghost' size='large' prefixIcon={dataMap[text].icon} shape='circle' color={dataMap[text].color}>{dataMap[text].text}</Tag>;

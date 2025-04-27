@@ -3,6 +3,8 @@
 import {model} from '../models';
 import {context} from '../models';
 
+export function ActionsStart(arg1:Array<string>,arg2:string,arg3:number,arg4:string):Promise<model.WailsCommunicate>;
+
 export function ConfigJavaAddOrUpdate(arg1:model.TableJava):Promise<model.WailsCommunicate>;
 
 export function ConfigJavaDelete(arg1:number):Promise<model.WailsCommunicate>;

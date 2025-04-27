@@ -10,6 +10,7 @@ const options: any[] = [
 
 // 过滤规则
 const optionsRules: any[] = [
+  { label: '全部数据', value: '' },
   { label: '只看在线', value: 'online' },
   { label: '只看离线', value: 'offline' },
 ];

@@ -2,7 +2,7 @@ package survey
 
 import (
 	"PeachDRAC/backend/constants"
-	"PeachDRAC/backend/farmework"
+	"PeachDRAC/backend/encapsulation"
 	"PeachDRAC/backend/model"
 	"fmt"
 	"sync"
@@ -33,8 +33,8 @@ func (s *ServiceSurvey) StartSurvey(ips []string) model.WailsCommunicate {
 			defer wg.Done()
 
 			var (
-				client    = &farmework.IPMI{} // IPMI客户端
-				isSuccess = false             // 是否成功
+				client    = &encapsulation.IPMI{} // IPMI客户端
+				isSuccess = false                 // 是否成功
 			)
 
 			for _, item := range pass_list {
@@ -50,8 +50,20 @@ func (s *ServiceSurvey) StartSurvey(ips []string) model.WailsCommunicate {
 				return
 			}
 
-			// 读取硬件信息
-			deviceModel, sn, manufacturer, err := client.GetModelAndSN()
+			// 读取硬件信息(最多尝试3次)
+			var (
+				deviceModel  string
+				sn           string
+				manufacturer string
+				err          error
+			)
+			for i := 0; i < 3; i++ {
+				deviceModel, sn, manufacturer, err = client.GetModelAndSN()
+				if err != nil {
+					continue
+				}
+				break
+			}
 			if err != nil {
 				runtime.EventsEmit(s.ctx, constants.EventTask, model.WailsTaskExit(true, ip, fmt.Sprintf("读取硬件信息失败: %s", err)))
 				return

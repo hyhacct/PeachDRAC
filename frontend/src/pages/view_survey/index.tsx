@@ -1,4 +1,4 @@
-import { Card, Select, Input, Space, Table, Button, Notification, Banner } from '@douyinfe/semi-ui';
+import { Card, Select, Input, Space, Table, Button, Notification, Banner, Tag } from '@douyinfe/semi-ui';
 import { IconDesktop, IconDescend, IconFilter, IconCopy, IconRefresh2, IconHelpCircle } from '@douyinfe/semi-icons';
 import { IconGettingStarted } from '@douyinfe/semi-icons-lab';
 import { options, optionsRules } from './fixed';
@@ -10,17 +10,26 @@ import { getRandomText } from '@/utils/doyouknow';
 
 const pagination = { pageSize: 10 };
 
-const copyOnline = () => {
-  Notification.success({
-    title: '成功',
-    content: '复制成功',
-  });
-}
-
-
 const ViewSurvey = () => {
-  const { ipmi, paragraph, filter, dataList, update, reset, Start, loading } = useSurveyStore();
+  const { ipmi, paragraph, filter, dataList, update, reset, Start, loading, onlineLength, filterData, copyOnline } = useSurveyStore();
 
+  const copy = async () => {
+    try {
+      var resp = await copyOnline();
+      if (!resp) {
+        throw new Error('复制失败');
+      }
+      Notification.success({
+        title: '成功',
+        content: '复制成功',
+      });
+    } catch (error: any) {
+      Notification.error({
+        title: '错误',
+        content: error.message,
+      });
+    }
+  }
   // 开始探测
   const startSurvey = async () => {
     if (!verify_ip(ipmi) || isEmpty(paragraph)) {
@@ -56,22 +65,28 @@ const ViewSurvey = () => {
           <Space>
             <Input disabled={loading} prefix={<IconDesktop />} showClear style={{ width: 180 }} placeholder="输入IPMI" value={ipmi} onChange={(value) => update({ ipmi: value })} />
             <Select loading={loading} prefix={<IconDescend />} filter style={{ width: 150 }} placeholder="网段" optionList={options} value={paragraph} onChange={(value) => update({ paragraph: value as string })} />
-            <Select loading={loading} prefix={<IconFilter />} filter style={{ width: 150 }} placeholder="过滤规则" optionList={optionsRules} value={filter} onChange={(value) => update({ filter: value as string })} />
+            <Select prefix={<IconFilter />} filter style={{ width: 150 }} placeholder="过滤规则" optionList={optionsRules} value={filter} onChange={(value) => update({ filter: value as string })} />
             <Button loading={loading} theme='light' type='tertiary' style={{ marginRight: 8 }} icon={<IconRefresh2 />} onClick={reset}>重置</Button>
             <Button loading={loading} theme='light' type='primary' style={{ marginRight: 8 }} icon={<IconGettingStarted />} onClick={startSurvey}>开始探测</Button>
-            <Button loading={loading} theme='light' type='secondary' style={{ marginRight: 8 }} icon={<IconCopy />} onClick={copyOnline}>复制在线</Button>
+            <Button loading={loading} theme='light' type='secondary' style={{ marginRight: 8 }} icon={<IconCopy />} onClick={copy}>复制在线</Button>
+            <Tag
+              color='cyan'
+              size='large'
+              shape='circle'
+            >
+              在线{onlineLength()}台
+            </Tag>
           </Space>
         </Card>
       </div>
-      {/* loading && */}
-      {<div style={{ marginTop: 10 }}>
+      {loading && <div style={{ marginTop: 10 }}>
         <Banner fullMode={false} type="info" bordered icon={<IconHelpCircle />} closeIcon={null}
           title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>你知道吗？</div>}
           description={<div>{getRandomText()}</div>}
         />
       </div>}
       <div style={{ marginTop: 10 }}>
-        <Table columns={columns} dataSource={dataList} pagination={pagination} loading={loading} />
+        <Table columns={columns} dataSource={filterData()} pagination={pagination} />
       </div>
     </div>
   );

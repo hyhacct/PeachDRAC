@@ -3,6 +3,7 @@ package apps
 import (
 	"PeachDRAC/backend/farmework"
 	"PeachDRAC/backend/model"
+	"PeachDRAC/backend/service/actions"
 	"PeachDRAC/backend/service/config"
 	"PeachDRAC/backend/service/survey"
 	"context"
@@ -10,9 +11,10 @@ import (
 
 // App struct
 type App struct {
-	ctx            context.Context
-	config_service *config.ServiceConfig
-	survey_service *survey.ServiceSurvey
+	ctx             context.Context
+	config_service  *config.ServiceConfig
+	survey_service  *survey.ServiceSurvey
+	actions_service *actions.ServiceActions
 }
 
 // NewApp creates a new App application struct
@@ -37,6 +39,9 @@ func (a *App) Startup(ctx context.Context) {
 
 	// 初始化survey服务
 	a.survey_service = survey.NewService(a.ctx)
+
+	// 初始化actions服务
+	a.actions_service = actions.NewService(a.ctx)
 }
 
 // domReady is called after front-end resources have been loaded
@@ -115,4 +120,11 @@ func (a *App) ConfigJavaDelete(id int) model.WailsCommunicate {
 */
 func (a *App) SurveyStart(ips []string) model.WailsCommunicate {
 	return a.survey_service.StartSurvey(ips)
+}
+
+/*
+开始操作
+*/
+func (a *App) ActionsStart(ips []string, action string, fan int, nfs string) model.WailsCommunicate {
+	return a.actions_service.Start(ips, action, fan, nfs)
 }
