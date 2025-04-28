@@ -108,38 +108,18 @@ const useActionsStore = create<ActionsStore>((set, get) => ({
       console.log("wails_actions ===>", task);
       try {
         set((state) => {
-          // 检查是否需要添加新记录
-          const exists = state.dataList.some((item) => item.ipmi === task.ipmi);
-          let newDataList: ActionsData[];
-
-          if (!exists) {
-            newDataList = [
-              ...state.dataList,
-              {
-                ipmi: task.ipmi,
-                status: task.status,
-                model: task.model,
-                manufacturer: task.manufacturer,
-                sn: task.sn,
-                action: task.action,
-                message: task.message,
-              },
-            ];
-          } else {
-            // 更新现有记录
-            newDataList = state.dataList.map((item) =>
-              item.ipmi === task.ipmi
-                ? {
-                    ...item, // 创建新对象
-                    status: task.status,
-                    model: task.model,
-                    manufacturer: task.manufacturer,
-                    sn: task.sn,
-                    message: task.message,
-                  }
-                : item
-            );
-          }
+          let newDataList = state.dataList.map((item) =>
+            item.ipmi === task.ipmi
+              ? {
+                  ...item, // 创建新对象
+                  status: task.status,
+                  model: task.model,
+                  manufacturer: task.manufacturer,
+                  sn: task.sn,
+                  message: task.message,
+                }
+              : item
+          );
           return { dataList: newDataList };
         });
       } catch (error) {

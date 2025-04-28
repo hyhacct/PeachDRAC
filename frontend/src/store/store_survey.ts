@@ -55,55 +55,29 @@ const useSurveyStore = create<SurveyStore>((set, get) => ({
     EventsOn("wails_task", (task: WailsTask) => {
       try {
         set((state) => {
-          // 检查是否需要添加新记录
-          const exists = state.dataList.some((item) => item.ipmi === task.id);
-          let newDataList: SurveyData[];
+          let newDataList = state.dataList.map((item) =>
+            item.ipmi === task.id
+              ? {
+                  ...item, // 创建新对象
+                  status:
+                    (task.done && task.exit) || task.login
+                      ? "online"
+                      : task.done && !task.exit
+                      ? "completed"
+                      : task.exit
+                      ? "offline"
+                      : "ready",
+                  model:
+                    task.done && task.exit
+                      ? task.args[0] || item.model
+                      : item.model,
+                  sn:
+                    task.done && task.exit ? task.args[1] || item.sn : item.sn,
+                  msg: task.msg,
+                }
+              : item
+          );
 
-          if (!exists) {
-            newDataList = [
-              ...state.dataList,
-              {
-                ipmi: task.id,
-                status:
-                  (task.done && task.exit) || task.login
-                    ? "online"
-                    : task.done && !task.exit
-                    ? "completed"
-                    : task.exit
-                    ? "offline"
-                    : "ready",
-                model: task.args[0] || "",
-                sn: task.args[1] || "",
-                msg: task.msg,
-              },
-            ];
-          } else {
-            // 更新现有记录
-            newDataList = state.dataList.map((item) =>
-              item.ipmi === task.id
-                ? {
-                    ...item, // 创建新对象
-                    status:
-                      (task.done && task.exit) || task.login
-                        ? "online"
-                        : task.done && !task.exit
-                        ? "completed"
-                        : task.exit
-                        ? "offline"
-                        : "ready",
-                    model:
-                      task.done && task.exit
-                        ? task.args[0] || item.model
-                        : item.model,
-                    sn:
-                      task.done && task.exit
-                        ? task.args[1] || item.sn
-                        : item.sn,
-                    msg: task.msg,
-                  }
-                : item
-            );
-          }
           return { dataList: newDataList };
         });
       } catch (error) {

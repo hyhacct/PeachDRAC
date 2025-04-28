@@ -32,8 +32,6 @@ func (s *ServiceActions) Start(ips []string, action string, fan int, nfs string)
 	for _, ip := range ips {
 		wg.Add(1)
 		go func(ip string) {
-			defer wg.Done()
-
 			var (
 				client    = &interfaces.InterfacesDefault{} // IPMI客户端
 				isSuccess = false                           // 是否成功
@@ -90,6 +88,11 @@ func (s *ServiceActions) Start(ips []string, action string, fan int, nfs string)
 				return
 			}
 
+			// 释放资源
+			defer func() {
+				wg.Done()
+				client.Close()
+			}()
 		}(ip)
 	}
 

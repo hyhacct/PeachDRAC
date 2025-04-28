@@ -21,7 +21,10 @@ func (s *ServiceActions) BranchDell(client *interfaces.InterfacesDefault) {
 	case constants.ActionMountNFS:
 		err = client.DellJobMountNfs(client.Actions.Nfs) // 挂载NFS
 	case constants.ActionUnmountNFS:
-		err = client.DellJobMountNfs("") // 卸载NFS
+		err = client.DellJobUnMountNfs() // 卸载NFS
+		if err == nil {
+			err = client.DellJobBootSetNone() // 恢复正常引导
+		}
 	case constants.ActionStartJavaConsole:
 		err = client.DellJobLoginWebR730() // 登录Web Ipmi R730
 		if err == nil {
