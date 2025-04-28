@@ -9,7 +9,7 @@ function ViewAction() {
   return (
     <div>
       <div>
-        <Row gutter={16}>
+        <Row gutter={20}>
           <Col span={12}>
             <ButtonGroup />
           </Col>

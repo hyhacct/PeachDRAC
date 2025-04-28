@@ -2,8 +2,8 @@ package actions
 
 import (
 	"PeachDRAC/backend/constants"
-	"PeachDRAC/backend/encapsulation"
 	"PeachDRAC/backend/farmework"
+	interfaces "PeachDRAC/backend/interfaces"
 	"PeachDRAC/backend/model"
 	"fmt"
 	"sync"
@@ -35,9 +35,8 @@ func (s *ServiceActions) Start(ips []string, action string, fan int, nfs string)
 			defer wg.Done()
 
 			var (
-				client    = &encapsulation.IPMI{} // IPMI客户端
-				isSuccess = false                 // 是否成功
-				actions   model.ModelActions      // 操作数据
+				client    = &interfaces.InterfacesDefault{} // IPMI客户端
+				isSuccess = false                           // 是否成功
 			)
 
 			for _, item := range pass_list {
@@ -45,7 +44,7 @@ func (s *ServiceActions) Start(ips []string, action string, fan int, nfs string)
 					continue
 				}
 				isSuccess = true
-				actions = model.ModelActions{
+				client.Actions = model.ModelActions{
 					IP:       ip,
 					Username: item.Username,
 					Password: item.Password,
@@ -57,7 +56,7 @@ func (s *ServiceActions) Start(ips []string, action string, fan int, nfs string)
 			}
 
 			if !isSuccess {
-				runtime.EventsEmit(s.ctx, constants.EventActions, model.WailsActionsError(ip, action, fmt.Sprintf("已尝试%d个密码组,均失败", len(pass_list))))
+				runtime.EventsEmit(s.ctx, constants.EventActions, model.WailsActionsError(client.Actions, fmt.Sprintf("已尝试%d个密码组,均失败", len(pass_list))))
 				return
 			}
 
@@ -67,24 +66,30 @@ func (s *ServiceActions) Start(ips []string, action string, fan int, nfs string)
 				if err != nil {
 					continue
 				}
-				actions.DeviceModel = deviceModel
-				actions.Sn = sn
-				actions.Manufacturer = manufacturer
+				client.Actions.DeviceModel = deviceModel
+				client.Actions.Sn = sn
+				client.Actions.Manufacturer = manufacturer
 				break
 			}
 			if err != nil {
-				runtime.EventsEmit(s.ctx, constants.EventActions, model.WailsActionsError(ip, action, fmt.Sprintf("读取硬件信息失败: %s", err)))
+				runtime.EventsEmit(s.ctx, constants.EventActions, model.WailsActionsError(client.Actions, fmt.Sprintf("读取硬件信息失败: %s", err)))
 				return
 			}
 
 			// 记录一下日志
-			farmework.ModuleLogs.Info("进行操作", actions, "服务器=", ip, "SN=", actions.Sn, "型号=", actions.DeviceModel, "厂商=", actions.Manufacturer)
+			farmework.ModuleLogs.Info("进行操作", client.Actions, "服务器=", ip, "SN=", client.Actions.Sn, "型号=", client.Actions.DeviceModel, "厂商=", client.Actions.Manufacturer)
 
 			// 根据不同的厂商执行对应的接口
-			switch actions.Manufacturer {
+			switch client.Actions.Manufacturer {
 			case "DELL":
-				s.ActionsDell(actions)
+				s.BranchDell(client)
+			case "Inspur":
+				s.BranchInspur(client)
+			default:
+				runtime.EventsEmit(s.ctx, constants.EventActions, model.WailsActionsError(client.Actions, fmt.Sprintf("暂不支持厂商:%s", client.Actions.Manufacturer)))
+				return
 			}
+
 		}(ip)
 	}
 
@@ -93,41 +98,4 @@ func (s *ServiceActions) Start(ips []string, action string, fan int, nfs string)
 
 	return model.WailsSuccess("探测完成", "")
 
-}
-
-func (s *ServiceActions) ActionsDell(actions model.ModelActions) {
-	var (
-		api = &encapsulation.RedfishDell{
-			IP:       actions.IP,
-			Username: actions.Username,
-			Password: actions.Password,
-		}
-		err error
-	)
-	switch actions.Action {
-	case constants.ActionPowerOn:
-		err = api.PowerOn() // 开机
-	case constants.ActionRestart:
-		err = api.ForceRestart() // 重启
-	case constants.ActionPowerOff:
-		err = api.ForceOff() // 关机
-	case constants.ActionMountNFS:
-		err = api.MountNFS(actions.Nfs) // 挂载NFS
-	case constants.ActionUnmountNFS:
-		err = api.UnmountNFS() // 卸载NFS
-	case constants.ActionStartJavaConsole:
-		err = api.LoginWebIpmiR730() // 登录Web Ipmi R730
-		if err == nil {
-			err = api.DownloadJnlp() // 下载JNLP文件
-		}
-	default:
-		runtime.EventsEmit(s.ctx, constants.EventActions, model.WailsActionsError(actions.IP, actions.Action, "暂不支持此操作"))
-		return
-	}
-	// 最终检查有没有错误
-	if err != nil {
-		runtime.EventsEmit(s.ctx, constants.EventActions, model.WailsActionsError(actions.IP, actions.Action, fmt.Sprintf("检查出错: %s", err.Error())))
-		return
-	}
-	runtime.EventsEmit(s.ctx, constants.EventActions, model.WailsActionsSuccess(actions.IP, actions.Action, actions.DeviceModel, actions.Manufacturer, actions.Sn))
 }

@@ -2,7 +2,7 @@ package survey
 
 import (
 	"PeachDRAC/backend/constants"
-	"PeachDRAC/backend/encapsulation"
+	interfaces "PeachDRAC/backend/interfaces"
 	"PeachDRAC/backend/model"
 	"fmt"
 	"sync"
@@ -33,8 +33,8 @@ func (s *ServiceSurvey) StartSurvey(ips []string) model.WailsCommunicate {
 			defer wg.Done()
 
 			var (
-				client    = &encapsulation.IPMI{} // IPMI客户端
-				isSuccess = false                 // 是否成功
+				client    = &interfaces.InterfacesDefault{} // IPMI客户端
+				isSuccess = false                           // 是否成功
 			)
 
 			for _, item := range pass_list {

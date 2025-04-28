@@ -10,38 +10,26 @@ type WailsActions struct {
 	Message      string `json:"message"`
 }
 
-func WailsActionsSuccess(ipmi string, action string, model string, manufacturer string, sn string) WailsActions {
+func WailsActionsSuccess(action ModelActions) WailsActions {
 	return WailsActions{
-		IPMI:         ipmi,
-		Action:       action,
-		Model:        model,
-		Manufacturer: manufacturer,
-		Sn:           sn,
+		IPMI:         action.IP,
+		Action:       action.Action,
+		Model:        action.DeviceModel,
+		Manufacturer: action.Manufacturer,
+		Sn:           action.Sn,
 		Status:       "success",
 		Message:      "任务完成",
 	}
 }
 
-func WailsActionsError(ipmi string, action string, msg string) WailsActions {
+func WailsActionsError(action ModelActions, messgae string) WailsActions {
 	return WailsActions{
-		IPMI:         ipmi,
-		Action:       action,
-		Model:        "",
-		Manufacturer: "",
-		Sn:           "",
+		IPMI:         action.IP,
+		Action:       action.Action,
+		Model:        action.DeviceModel,
+		Manufacturer: action.Manufacturer,
+		Sn:           action.Sn,
 		Status:       "error",
-		Message:      msg,
-	}
-}
-
-func WailsActionsProgress(ipmi string, action string, msg string) WailsActions {
-	return WailsActions{
-		IPMI:         ipmi,
-		Action:       action,
-		Model:        "",
-		Manufacturer: "",
-		Sn:           "",
-		Status:       "ready",
-		Message:      msg,
+		Message:      messgae,
 	}
 }

@@ -48,17 +48,9 @@ function ButtonGroup() {
               theme="solid"
               type="warning"
               style={{ margin: 5 }}
-              onClick={() => handleStart("PowerOff")}
-            >
-              强制关机
-            </Button>
-            <Button
-              theme="solid"
-              type="warning"
-              style={{ margin: 5 }}
               onClick={() => handleStart("Restart")}
             >
-              强制重启
+              重启
             </Button>
           </div>
         </TabPane>
@@ -72,21 +64,22 @@ function ButtonGroup() {
           itemKey="2"
         >
           <div>
-            <Button
+            {/* <Button
               theme="solid"
               type="primary"
               style={{ margin: 5 }}
               onClick={() => handleStart("启动Java控制台[踢掉其他会话]")}
             >
               启动Java控制台[踢掉其他会话]
-            </Button>
+            </Button> */}
             <Button
               theme="solid"
               type="primary"
               style={{ margin: 5 }}
+              block
               onClick={() => handleStart("StartJavaConsole")}
             >
-              启动Java控制台[保留其他会话]
+              启动Java控制台
             </Button>
           </div>
         </TabPane>
@@ -124,7 +117,7 @@ function ButtonGroup() {
                 theme="solid"
                 style={{ margin: 5 }}
                 block
-                onClick={() => handleStart("手动调整")}
+                onClick={() => handleStart("SetFan")}
               >
                 手动调整
               </Button>
@@ -132,7 +125,7 @@ function ButtonGroup() {
                 theme="solid"
                 style={{ margin: 5 }}
                 block
-                onClick={() => handleStart("恢复自动")}
+                onClick={() => handleStart("SetFanAuto")}
               >
                 恢复自动
               </Button>
@@ -153,7 +146,7 @@ function ButtonGroup() {
               <Input
                 prefix={<IconSearch />}
                 showClear
-                placeholder="NFS服务器IP"
+                placeholder="远程挂载地址"
                 value={formNfs}
                 onChange={(value) => {
                   update({ formNfs: value });
@@ -163,7 +156,7 @@ function ButtonGroup() {
                 theme="solid"
                 type="danger"
                 block
-                onClick={() => handleStart("确认挂载")}
+                onClick={() => handleStart("MountNFS")}
               >
                 确认挂载
               </Button>
@@ -171,7 +164,7 @@ function ButtonGroup() {
                 theme="solid"
                 type="danger"
                 block
-                onClick={() => handleStart("取消挂载")}
+                onClick={() => handleStart("UnmountNFS")}
               >
                 取消挂载
               </Button>

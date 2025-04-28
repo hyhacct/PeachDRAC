@@ -1,4 +1,11 @@
-import { List, Divider, Descriptions, Tag, Space } from "@douyinfe/semi-ui";
+import {
+  List,
+  Divider,
+  Descriptions,
+  Tag,
+  Space,
+  Spin,
+} from "@douyinfe/semi-ui";
 import useActionsStore from "@/store/store_actions";
 import { IconVerify, IconHourglass, IconClear } from "@douyinfe/semi-icons";
 
@@ -11,7 +18,7 @@ const TaskList = () => {
     margin: "8px 2px",
   };
 
-  const { dataList } = useActionsStore();
+  const { dataList, loading } = useActionsStore();
 
   const getStatusComponent = (status: string) => {
     const body = {
@@ -49,29 +56,34 @@ const TaskList = () => {
           {dataList.map((item) => (
             <List.Item style={style}>
               <div>
-                <h3
-                  style={{ color: "var(--semi-color-text-0)", fontWeight: 500 }}
-                >
-                  <Space>
-                    {getStatusComponent(item.status)}
-                    {item.ipmi}
-                  </Space>
-                </h3>
-                <Descriptions
-                  align="left"
-                  size="small"
-                  column={1}
-                  data={[
-                    {
-                      key: "操作",
-                      value: item.action,
-                    },
-                    { key: "厂商", value: item.manufacturer },
-                    { key: "型号", value: item.model },
-                    { key: "SN", value: item.sn },
-                    { key: "消息", value: item.message },
-                  ]}
-                />
+                <Spin tip="急速进行中..." spinning={loading}>
+                  <h3
+                    style={{
+                      color: "var(--semi-color-text-0)",
+                      fontWeight: 500,
+                    }}
+                  >
+                    <Space>
+                      {getStatusComponent(item.status)}
+                      {item.ipmi}
+                    </Space>
+                  </h3>
+                  <Descriptions
+                    align="left"
+                    size="small"
+                    column={1}
+                    data={[
+                      {
+                        key: "操作",
+                        value: item.action,
+                      },
+                      { key: "厂商", value: item.manufacturer },
+                      { key: "型号", value: item.model },
+                      { key: "SN", value: item.sn },
+                      { key: "消息", value: item.message },
+                    ]}
+                  />
+                </Spin>
               </div>
             </List.Item>
           ))}
