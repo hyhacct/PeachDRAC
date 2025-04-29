@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { EventsOn } from "@wails/runtime/runtime";
-import { ActionsStart } from "@wails/go/apps/App";
+import { ActionsStart, ActionsStop } from "@wails/go/apps/App";
 import { Notification } from "@douyinfe/semi-ui";
 import { verify_ip } from "@/utils/address";
 
@@ -23,10 +23,12 @@ interface ActionsStore {
   formIpmiList: string[]; // 输入的IPMI列表
   formFan: number; // 输入的转速百分比
   formNfs: string; // 输入的挂载路径
+  isExiting: boolean; // 是否正在停止
 
   update: (update: Partial<ActionsStore>) => void;
   reset: () => void;
   Start: (actions: string) => void;
+  Stop: () => void;
   onTask: () => void;
 }
 
@@ -40,6 +42,7 @@ const initialState: Pick<
   | "formIpmiList"
   | "formFan"
   | "formNfs"
+  | "isExiting"
 > = {
   ipmi: "",
   action: "",
@@ -49,6 +52,7 @@ const initialState: Pick<
   formIpmiList: [],
   formFan: 80,
   formNfs: "",
+  isExiting: false,
 };
 
 const useActionsStore = create<ActionsStore>((set, get) => ({
@@ -128,6 +132,27 @@ const useActionsStore = create<ActionsStore>((set, get) => ({
     });
 
     return () => {};
+  },
+  Stop: async () => {
+    try {
+      set({ isExiting: true });
+      const resp = await ActionsStop();
+      if (!resp.Status) {
+        throw new Error(resp.Msg);
+      }
+      Notification.success({
+        title: "成功",
+        content: resp.Msg,
+      });
+    } catch (error) {
+      Notification.error({
+        title: "错误",
+        content: error instanceof Error ? error.message : "操作失败",
+      });
+    } finally {
+      set({ isExiting: false });
+      set({ loading: false });
+    }
   },
 }));
 

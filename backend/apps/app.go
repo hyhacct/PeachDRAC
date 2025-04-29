@@ -128,3 +128,10 @@ func (a *App) SurveyStart(ips []string) model.WailsCommunicate {
 func (a *App) ActionsStart(ips []string, action string, fan int, nfs string) model.WailsCommunicate {
 	return a.actions_service.Start(ips, action, fan, nfs)
 }
+
+/*
+停止操作
+*/
+func (a *App) ActionsStop() model.WailsCommunicate {
+	return a.actions_service.Stop()
+}

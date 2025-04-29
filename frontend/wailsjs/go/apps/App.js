@@ -6,6 +6,10 @@ export function ActionsStart(arg1, arg2, arg3, arg4) {
   return window['go']['apps']['App']['ActionsStart'](arg1, arg2, arg3, arg4);
 }
 
+export function ActionsStop() {
+  return window['go']['apps']['App']['ActionsStop']();
+}
+
 export function ConfigJavaAddOrUpdate(arg1) {
   return window['go']['apps']['App']['ConfigJavaAddOrUpdate'](arg1);
 }

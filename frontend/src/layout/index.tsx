@@ -5,7 +5,7 @@ import {
   IconDivider,
   IconCodeHighlight,
 } from "@douyinfe/semi-icons-lab";
-import { Route, Routes, Link } from "react-router-dom";
+import { Route, Routes, Link, Navigate } from "react-router-dom";
 import ViewAction from "@/pages/view_action";
 import ViewSurvey from "@/pages/view_survey";
 import ViewSetting from "@/pages/view_seting";
@@ -20,7 +20,7 @@ export const ViewLayout = () => {
         // logo: <IconSemiLogo style={{ height: '36px', fontSize: 36 }} />,
         text: "Arc Dock",
       }}
-      style={{ maxWidth: 150, height: "100vh" }}
+      style={{ maxWidth: 150, height: "100vh", textAlign: "center" }}
       defaultSelectedKeys={["item-1"]}
       renderWrapper={({ itemElement, isSubNav, isInSubNav, props }) => {
         const routerMap = {
@@ -86,6 +86,7 @@ export const ViewLayout = () => {
             }}
           >
             <Routes>
+              <Route path="/" element={<Navigate to="/action" replace />} />
               <Route path="/action" element={<ViewAction />} />
               <Route path="/survey" element={<ViewSurvey />} />
               <Route path="/config" element={<ViewConfig />} />
