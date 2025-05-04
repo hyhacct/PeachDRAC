@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"PeachDRAC/backend/model"
 	"PeachDRAC/backend/utils"
 	"fmt"
 	"os/exec"
@@ -25,8 +26,21 @@ func (s *InterfacesDefault) DellJobDownloadJnlp() error {
 	if err != nil {
 		return fmt.Errorf("写入文件失败: %v", err)
 	}
-	// 执行下载的JNLP文件
-	err = exec.Command("javaws", fileName).Run()
+	// 获取指定版本 java
+	isDefaulr := false
+	list, err := model.TableJava{}.GetManufacturer("DELL") // 只取支持 dell 的 java 版本,取首个配置,如果没有则直接系统默认 java 启动
+	if err != nil {
+		isDefaulr = true // 启用默认
+	}
+	if len(list) == 0 {
+		isDefaulr = true // 启用默认
+	}
+	// 执行默认 java
+	if isDefaulr {
+		err = exec.Command("javaws", fileName).Run()
+	} else {
+		err = exec.Command(list[0].Path, fileName).Run()
+	}
 	if err != nil {
 		return fmt.Errorf("执行JNLP文件失败: %v", err)
 	}

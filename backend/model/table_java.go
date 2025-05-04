@@ -25,6 +25,12 @@ func (TableJava) GetAll() ([]TableJava, error) {
 	return javaList, err
 }
 
+func (TableJava) GetManufacturer(manufacturer string) ([]TableJava, error) {
+	var javaList []TableJava
+	err := farmework.ModuleOrm.Where("allot = ?", manufacturer).Find(&javaList).Error
+	return javaList, err
+}
+
 func (TableJava) GetByID(id int) (TableJava, error) {
 	var java TableJava
 	err := farmework.ModuleOrm.Where("id = ?", id).First(&java).Error

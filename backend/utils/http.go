@@ -26,8 +26,8 @@ func HttpTlsConfig() *resty.Client {
 		},
 	})
 	// 设置超时和重试
-	client.SetTimeout(10 * time.Second)
-	client.SetRetryCount(3).SetRetryWaitTime(2 * time.Second)
+	client.SetTimeout(30 * time.Second)
+	client.SetRetryCount(5).SetRetryWaitTime(5 * time.Second)
 	return client
 }
 

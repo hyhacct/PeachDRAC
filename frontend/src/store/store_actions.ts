@@ -76,7 +76,7 @@ const useActionsStore = create<ActionsStore>((set, get) => ({
         manufacturer: "",
         sn: "",
         action: actions,
-        message: "", // 消息
+        message: "就绪", // 消息
       });
     });
     set({ formIpmiList: array, dataList: arrayData });
@@ -104,12 +104,19 @@ const useActionsStore = create<ActionsStore>((set, get) => ({
       });
     } finally {
       set({ loading: false });
+      // 将所有就绪中的任务设置为失败
+      get().dataList.forEach((item) => {
+        if (item.status === "ready") {
+          item.status = "error";
+          item.message = "任务退出,暂无状态,可能是超时";
+        }
+      });
+      set({ dataList: get().dataList });
     }
   },
 
   onTask: () => {
     EventsOn("wails_actions", (task: ActionsData) => {
-      console.log("wails_actions ===>", task);
       try {
         set((state) => {
           let newDataList = state.dataList.map((item) =>

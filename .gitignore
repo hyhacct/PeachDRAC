@@ -2,9 +2,8 @@
 **/build/bin**
 **/dist/**
 **/node_modules/**
-**/etc/jnlp**
-**/etc/lib**
+**/etc/**
 
 # 文件位置
-*.log
-*.db
+default.log
+default.db
