@@ -5,5 +5,5 @@
 **/etc/**
 
 # 文件位置
-default.log
-default.db
+*.log
+*.db
